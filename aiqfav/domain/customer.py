@@ -10,19 +10,21 @@ class CustomerBase(BaseModel):
     name: str = Field(description='Nome do cliente', max_length=255)
     email: str = Field(description='E-mail do cliente', max_length=255)
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class CustomerCreate(CustomerBase):
     """Modelo para criação de um cliente"""
 
-    password: str = Field(description='Senha do cliente')
+    password: str = Field(
+        description='Senha do cliente (plana) - Não deve ser salvo no banco de dados, use CustomerWithPassword para salvar a senha hasheada'
+    )
 
 
-class Customer(CustomerBase):
+class CustomerPublic(CustomerBase):
     """Modelo para um cliente"""
 
     id: int = Field(description='ID do cliente', gt=0)
-
-    model_config = ConfigDict(from_attributes=True)
 
 
 class CustomerWithFavorites(CustomerBase):
@@ -34,7 +36,15 @@ class CustomerWithFavorites(CustomerBase):
         description='Lista de produtos favoritos do cliente',
     )
 
-    model_config = ConfigDict(from_attributes=True)
+
+class CustomerWithPassword(CustomerBase):
+    """Modelo para um cliente com senha"""
+
+    hashed_password: str = Field(description='Hash da senha do cliente')
+
+
+class CustomerInDb(CustomerPublic, CustomerWithPassword):
+    """Modelo para um cliente no banco de dados"""
 
 
 ### Exceptions

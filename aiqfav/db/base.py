@@ -1,14 +1,14 @@
 import abc
 from typing import overload
 
-from aiqfav.domain.customer import Customer
+from aiqfav.domain.customer import CustomerInDb, CustomerWithPassword
 
 
 class CustomerRepository(abc.ABC):
     """Base class for the Customer repository"""
 
     @overload
-    async def get_customer(*, email: str) -> Customer:
+    async def get_customer(self, *, email: str) -> CustomerInDb:
         """Query a customer by email (alternate key).
 
         Args:
@@ -22,7 +22,7 @@ class CustomerRepository(abc.ABC):
         """
 
     @overload
-    async def get_customer(*, id: int) -> Customer:
+    async def get_customer(self, *, id: int) -> CustomerInDb:
         """Query a customer by id (primary key).
 
         Args:
@@ -37,8 +37,13 @@ class CustomerRepository(abc.ABC):
 
     @abc.abstractmethod
     async def get_customer(
-        *, email: str | None = None, id: int | None = None
-    ) -> Customer: ...
+        self, *, email: str | None = None, id: int | None = None
+    ) -> CustomerInDb: ...
 
     @abc.abstractmethod
-    async def list_customers(self) -> list[Customer]: ...
+    async def list_customers(self) -> list[CustomerInDb]: ...
+
+    @abc.abstractmethod
+    async def create_customer(
+        self, customer: CustomerWithPassword
+    ) -> CustomerInDb: ...

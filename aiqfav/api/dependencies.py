@@ -2,6 +2,7 @@ from typing import Annotated
 
 from environs import Env
 from fastapi import Depends
+from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -10,6 +11,7 @@ from sqlalchemy.ext.asyncio import (
 
 from aiqfav.db.base import CustomerRepository
 from aiqfav.db.implementations.repositories import CustomerRepositoryImpl
+from aiqfav.services.customer import CustomerService
 
 env = Env()
 env.read_env()
@@ -24,6 +26,11 @@ def get_async_session() -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(engine, expire_on_commit=False)
 
 
+def get_pwd_context() -> CryptContext:
+    """Dependency para obter o contexto de hash de senhas"""
+    return CryptContext(schemes=['argon2'], deprecated='auto')
+
+
 def get_customer_repository(
     async_session: Annotated[
         async_sessionmaker[AsyncSession], Depends(get_async_session)
@@ -31,3 +38,13 @@ def get_customer_repository(
 ) -> CustomerRepository:
     """Dependency para obter o repositório de clientes"""
     return CustomerRepositoryImpl(async_session)
+
+
+def get_customer_service(
+    customer_repository: Annotated[
+        CustomerRepository, Depends(get_customer_repository)
+    ],
+    pwd_context: Annotated[CryptContext, Depends(get_pwd_context)],
+) -> CustomerService:
+    """Dependency para obter o serviço de clientes"""
+    return CustomerService(customer_repository, pwd_context)

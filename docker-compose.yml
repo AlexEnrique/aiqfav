@@ -10,7 +10,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./src:/app/src
+      - ./aiqfav:/app/aiqfav
       - ./alembic:/app/alembic
     working_dir: /app
     command: uv run uvicorn aiqfav.api.app:app --host=0.0.0.0 --reload
@@ -24,7 +24,7 @@ services:
     ports:
       - 5432:5432
     env_file:
-      - .env      
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
