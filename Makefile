@@ -5,6 +5,9 @@
 dev:  ## Runs the development server
 	uv run uvicorn src.api.app:app --host=0.0.0.0 --reload
 
+.PHONY: install
+install:  ## Install the project's dependencies
+	uv sync
 
 .PHONY: format
 format: ## Format the code
