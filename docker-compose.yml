@@ -13,7 +13,7 @@ services:
       - ./aiqfav:/app/aiqfav
       - ./alembic:/app/alembic
     working_dir: /app
-    command: uv run uvicorn aiqfav.api.app:app --host=0.0.0.0 --reload
+    command: uv run uvicorn aiqfav.api:app --host=0.0.0.0 --reload
     develop:
       watch:
         - action: rebuild
