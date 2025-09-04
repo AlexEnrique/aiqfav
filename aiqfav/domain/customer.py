@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from .favorite import Favorite
 
@@ -6,17 +6,20 @@ from .favorite import Favorite
 ### Models
 class CustomerBase(BaseModel):
     """Modelo base para um cliente"""
+
     name: str = Field(description='Nome do cliente', max_length=255)
     email: str = Field(description='E-mail do cliente', max_length=255)
 
 
 class CustomerCreate(CustomerBase):
     """Modelo para criação de um cliente"""
+
     password: str = Field(description='Senha do cliente')
 
 
 class Customer(CustomerBase):
     """Modelo para um cliente"""
+
     id: int = Field(description='ID do cliente', gt=0)
 
     model_config = ConfigDict(from_attributes=True)
@@ -24,6 +27,7 @@ class Customer(CustomerBase):
 
 class CustomerWithFavorites(CustomerBase):
     """Modelo para um cliente"""
+
     id: int = Field(description='ID do cliente', gt=0)
     favorites: list[Favorite] = Field(
         default_factory=list,

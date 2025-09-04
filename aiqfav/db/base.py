@@ -39,6 +39,6 @@ class CustomerRepository(abc.ABC):
     async def get_customer(
         *, email: str | None = None, id: int | None = None
     ) -> Customer: ...
-    
+
     @abc.abstractmethod
     async def list_customers(self) -> list[Customer]: ...
