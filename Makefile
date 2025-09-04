@@ -3,7 +3,35 @@
 
 .PHONY: dev
 dev:  ## Runs the development server
-	uv run uvicorn src.api.app:app --host=0.0.0.0 --reload
+	docker compose up -d --build
+
+.PHONY: down
+down:  ## Stops the development server
+	docker compose down
+
+.PHONY: restart
+restart:  ## Restarts the development server
+	docker compose down && docker compose up -d --build
+
+.PHONY: logs
+logs:  ## Shows the logs of the development server
+	docker compose logs -f
+
+.PHONY: shell
+shell:  ## Opens a shell in the development server
+	docker compose exec api bash
+
+.PHONY: generate-migration
+generate-migration:  ## Generates a new migration
+	@if [ -z "$$message" ]; then \
+		echo "Error: message is required"; \
+		exit 1; \
+	fi
+	docker compose exec api uv run alembic revision --autogenerate -m "$$message"
+
+.PHONY: migrate
+migrate:  ## Runs the alembic migrations
+	docker compose exec api uv run alembic upgrade head
 
 .PHONY: install
 install:  ## Install the project's dependencies

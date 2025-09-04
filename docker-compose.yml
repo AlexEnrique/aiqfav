@@ -1,0 +1,33 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src
+      - ./alembic:/app/alembic
+    working_dir: /app
+    command: uv run uvicorn aiqfav.api.app:app --host=0.0.0.0 --reload
+    develop:
+      watch:
+        - action: rebuild
+          path: ./pyproject.toml
+
+  postgres:
+    image: postgres:16
+    ports:
+      - 5432:5432
+    env_file:
+      - .env      
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+  postgres_data:
