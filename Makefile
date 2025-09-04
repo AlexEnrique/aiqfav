@@ -2,6 +2,20 @@
 .PROJECT_NAME := aiqfav
 .API_CONTAINER_NAME := api
 
+
+.PHONY: .uv
+.uv:  ## Checks if uv is installed
+	@uv --version || echo 'Please install uv: https://docs.astral.sh/uv/getting-started/installation/'
+
+.PHONY: .pre-commit
+.pre-commit: ## Check that pre-commit is installed
+	@pre-commit -V || echo 'Please install pre-commit: https://pre-commit.com/'
+
+.PHONY: install
+install: .uv .pre-commit  ## Install the project's dependencies and pre-commit hooks
+	uv sync
+	pre-commit install --install-hooks
+
 .PHONY: dev
 dev:  ## Runs the development server
 	docker compose up -d --build
@@ -34,10 +48,6 @@ generate-migration:  ## Generates a new migration
 migrate:  ## Runs the alembic migrations
 	docker compose exec $(.API_CONTAINER_NAME) uv run alembic upgrade head
 
-.PHONY: install
-install:  ## Install the project's dependencies
-	uv sync
-
 .PHONY: format
 format: ## Format the code
 	uv run ruff format $(.PROJECT_NAME) --target-version py312
@@ -53,7 +63,7 @@ lint: ## Lint the code
 	uv run ruff check $(.PROJECT_NAME) --fix
 
 .PHONY: all
-all: format lint typecheck ## Run format, lint and typecheck 
+all: format lint typecheck ## Run format, lint and typecheck
 
 .PHONY: help
 help: ## Show this help message
