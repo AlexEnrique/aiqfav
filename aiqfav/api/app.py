@@ -1,6 +1,5 @@
 from typing import Annotated
 
-from environs import Env
 from fastapi import Depends, FastAPI, HTTPException
 
 from aiqfav.domain.customer import CustomerCreate
@@ -9,10 +8,6 @@ from aiqfav.services.customer.exceptions import EmailAlreadyExists
 from aiqfav.utils.api_errors import ErrorCodes, get_error_response
 
 from .dependencies import get_customer_service
-
-env = Env()
-env.read_env()
-
 
 app = FastAPI()
 
