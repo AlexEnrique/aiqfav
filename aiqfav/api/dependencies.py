@@ -9,8 +9,10 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from aiqfav.adapters.base import StoreApiAdapter
+from aiqfav.adapters.fakestore_api import FakeStoreApi
 from aiqfav.db.base import CustomerRepository
-from aiqfav.db.implementations.repositories import CustomerRepositoryImpl
+from aiqfav.db.implementations.customer import CustomerRepositoryImpl
 from aiqfav.services.customer import CustomerService
 
 env = Env()
@@ -40,11 +42,19 @@ def get_customer_repository(
     return CustomerRepositoryImpl(async_session)
 
 
+def get_store_api_adapter() -> StoreApiAdapter:
+    """Dependency para obter o adaptador de API de loja"""
+    return FakeStoreApi(env('FAKE_STORE_API_URL'))
+
+
 def get_customer_service(
     customer_repository: Annotated[
         CustomerRepository, Depends(get_customer_repository)
     ],
+    store_api_adapter: Annotated[
+        StoreApiAdapter, Depends(get_store_api_adapter)
+    ],
     pwd_context: Annotated[CryptContext, Depends(get_pwd_context)],
 ) -> CustomerService:
     """Dependency para obter o serviço de clientes"""
-    return CustomerService(customer_repository, pwd_context)
+    return CustomerService(customer_repository, store_api_adapter, pwd_context)

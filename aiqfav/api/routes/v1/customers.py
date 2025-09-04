@@ -9,6 +9,7 @@ from aiqfav.domain.customer import (
     CustomerNotFound,
     CustomerPublic,
 )
+from aiqfav.domain.product import ProductPublic
 from aiqfav.services.customer import CustomerService
 from aiqfav.services.customer.exceptions import EmailAlreadyExists
 from aiqfav.utils.api_errors import ErrorCodes, get_error_response
@@ -103,6 +104,30 @@ async def delete_customer(
     try:
         await customer_service.delete_customer(customer_id)
         return Response(status_code=204)
+    except CustomerNotFound:
+        raise HTTPException(
+            status_code=404,
+            detail=get_error_response(
+                error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
+                message='Cliente não encontrado',
+            ),
+        )
+
+
+@router.get(
+    '/customers/{customer_id}/favorites',
+    response_model=list[ProductPublic],
+    summary='Listar produtos favoritos',
+    description='Endpoint para listar todos os produtos favoritos de um cliente',
+)
+async def list_favorites(
+    customer_service: Annotated[
+        CustomerService, Depends(get_customer_service)
+    ],
+    customer_id: int,
+):
+    try:
+        return await customer_service.list_favorites_for_customer(customer_id)
     except CustomerNotFound:
         raise HTTPException(
             status_code=404,

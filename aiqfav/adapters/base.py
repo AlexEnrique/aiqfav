@@ -13,3 +13,9 @@ class StoreApiAdapter(abc.ABC):
     @abc.abstractmethod
     async def get_product(self, product_id: int) -> ProductPublic:
         """Get a product from the store API"""
+
+    @abc.abstractmethod
+    async def get_products_in_batch(
+        self, product_ids: list[int]
+    ) -> list[ProductPublic]:
+        """Get products in batch from the store API"""

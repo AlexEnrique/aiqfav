@@ -2,6 +2,7 @@ import abc
 from typing import overload
 
 from aiqfav.domain.customer import CustomerInDb, CustomerWithPassword
+from aiqfav.domain.favorite import FavoriteInDb
 
 
 class CustomerRepository(abc.ABC):
@@ -52,4 +53,24 @@ class CustomerRepository(abc.ABC):
 
     @abc.abstractmethod
     async def delete_customer(self, id: int) -> None:
-        """Delete a customer."""
+        """Delete a customer.
+
+        Args:
+            id (int): the customer id.
+
+        Raises:
+            CustomerNotFound: if the customer cannot be found.
+        """
+
+    @abc.abstractmethod
+    async def list_favorites_for_customer(
+        self, customer_id: int
+    ) -> list[FavoriteInDb]:
+        """List all favorites for a customer.
+
+        Args:
+            customer_id (int): the customer id.
+
+        Raises:
+            CustomerNotFound: if the a customer with the given id cannot be found.
+        """

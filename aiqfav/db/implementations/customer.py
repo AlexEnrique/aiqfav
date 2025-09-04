@@ -6,9 +6,11 @@ from aiqfav.domain.customer import (
     CustomerNotFound,
     CustomerWithPassword,
 )
+from aiqfav.domain.favorite import FavoriteInDb
 
 from ..base import CustomerRepository
 from .models import Customer as CustomerModel
+from .models import Favorite as FavoriteModel
 
 
 class CustomerRepositoryImpl(CustomerRepository):
@@ -62,3 +64,17 @@ class CustomerRepositoryImpl(CustomerRepository):
             stmt = delete(CustomerModel).where(CustomerModel.id == id)
             await session.execute(stmt)
             await session.commit()
+
+    async def list_favorites_for_customer(
+        self, customer_id: int
+    ) -> list[FavoriteInDb]:
+        async with self.async_session() as session:
+            stmt = select(FavoriteModel).where(
+                FavoriteModel.customer_id == customer_id
+            )
+            result = await session.execute(stmt)
+            favorites_in_db = result.scalars().all()
+            return [
+                FavoriteInDb.model_validate(favorite)
+                for favorite in favorites_in_db
+            ]

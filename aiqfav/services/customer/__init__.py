@@ -1,5 +1,6 @@
 from passlib.context import CryptContext
 
+from aiqfav.adapters.base import StoreApiAdapter
 from aiqfav.db.base import CustomerRepository
 from aiqfav.domain.customer import (
     CustomerCreate,
@@ -7,15 +8,20 @@ from aiqfav.domain.customer import (
     CustomerPublic,
     CustomerWithPassword,
 )
+from aiqfav.domain.product import ProductPublic
 
 from .exceptions import EmailAlreadyExists, InvalidCredentials
 
 
 class CustomerService:
     def __init__(
-        self, customer_repo: CustomerRepository, pwd_context: CryptContext
+        self,
+        customer_repo: CustomerRepository,
+        store_api_adapter: StoreApiAdapter,
+        pwd_context: CryptContext,
     ):
         self.customer_repo = customer_repo
+        self.store_api_adapter = store_api_adapter
         self.pwd_context = pwd_context
 
     async def get_customer_by_id(self, id: int) -> CustomerPublic:
@@ -71,3 +77,19 @@ class CustomerService:
 
     async def delete_customer(self, id: int) -> None:
         await self.customer_repo.delete_customer(id=id)
+
+    async def list_favorites_for_customer(
+        self, customer_id: int
+    ) -> list[ProductPublic]:
+        # Valida se o cliente existe
+        # Raises CustomerNotFound, se o cliente não existe
+        await self.customer_repo.get_customer(id=customer_id)
+
+        favorites_in_db = await self.customer_repo.list_favorites_for_customer(
+            customer_id
+        )
+        product_ids = [favorite.product_id for favorite in favorites_in_db]
+        favorite_products = await self.store_api_adapter.get_products_in_batch(
+            product_ids
+        )
+        return favorite_products
