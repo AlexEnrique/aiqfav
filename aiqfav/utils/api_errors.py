@@ -10,6 +10,7 @@ class ErrorResponse(BaseModel):
 
 class ErrorCodes(StrEnum):
     EMAIL_ALREADY_EXISTS = 'email_already_exists'
+    CUSTOMER_NOT_FOUND = 'customer_not_found'
 
 
 def get_error_response(

@@ -50,8 +50,11 @@ class CustomerWithPassword(CustomerBase):
     hashed_password: str = Field(description='Hash da senha do cliente')
 
 
-class CustomerInDb(CustomerPublic, CustomerWithPassword):
+class CustomerInDb(CustomerBase):
     """Modelo para um cliente no banco de dados"""
+
+    id: int = Field(description='ID do cliente', gt=0)
+    hashed_password: str = Field(description='Hash da senha do cliente')
 
 
 ### Exceptions

@@ -67,4 +67,7 @@ class CustomerService:
         if not self.pwd_context.verify(password, customer.hashed_password):
             raise invalid_credentials_exception
 
-        return customer
+        return CustomerPublic.model_validate(customer)
+
+    async def delete_customer(self, id: int) -> None:
+        await self.customer_repo.delete_customer(id=id)

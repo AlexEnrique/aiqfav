@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .routes.customers_v1 import router as customers_router_v1
+from .routes.v1.customers import router as customers_router_v1
 
 __all__ = ['create_app']
 

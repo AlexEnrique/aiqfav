@@ -41,9 +41,15 @@ class CustomerRepository(abc.ABC):
     ) -> CustomerInDb: ...
 
     @abc.abstractmethod
-    async def list_customers(self) -> list[CustomerInDb]: ...
+    async def list_customers(self) -> list[CustomerInDb]:
+        """List all customers."""
 
     @abc.abstractmethod
     async def create_customer(
         self, customer: CustomerWithPassword
-    ) -> CustomerInDb: ...
+    ) -> CustomerInDb:
+        """Create a customer."""
+
+    @abc.abstractmethod
+    async def delete_customer(self, id: int) -> None:
+        """Delete a customer."""

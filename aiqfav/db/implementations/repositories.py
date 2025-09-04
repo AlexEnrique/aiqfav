@@ -1,8 +1,9 @@
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from aiqfav.domain.customer import (
     CustomerInDb,
+    CustomerNotFound,
     CustomerWithPassword,
 )
 
@@ -23,8 +24,13 @@ class CustomerRepositoryImpl(CustomerRepository):
                 stmt = stmt.where(CustomerModel.email == email)
             elif id:
                 stmt = stmt.where(CustomerModel.id == id)
+
             result = await session.execute(stmt)
             customer = result.scalar_one_or_none()
+
+            if not customer:
+                raise CustomerNotFound(f'Customer with id {id} not found')
+
             return CustomerInDb.model_validate(customer)
 
     async def list_customers(self) -> list[CustomerInDb]:
@@ -46,3 +52,13 @@ class CustomerRepositoryImpl(CustomerRepository):
             await session.commit()
             await session.refresh(custmer_in_db)
             return CustomerInDb.model_validate(custmer_in_db)
+
+    async def delete_customer(self, id: int) -> None:
+        async with self.async_session() as session:
+            customer_in_db = await session.get(CustomerModel, id)
+            if not customer_in_db:
+                raise CustomerNotFound(f'Customer with id {id} not found')
+
+            stmt = delete(CustomerModel).where(CustomerModel.id == id)
+            await session.execute(stmt)
+            await session.commit()
