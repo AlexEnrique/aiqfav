@@ -1,5 +1,6 @@
 .DEFAULT_GOAL := help
-
+.PROJECT_NAME := aiqfav
+.API_CONTAINER_NAME := api
 
 .PHONY: dev
 dev:  ## Runs the development server
@@ -19,7 +20,7 @@ logs:  ## Shows the logs of the development server
 
 .PHONY: shell
 shell:  ## Opens a shell in the development server
-	docker compose exec api bash
+	docker compose exec $(.API_CONTAINER_NAME) bash
 
 .PHONY: generate-migration
 generate-migration:  ## Generates a new migration
@@ -27,11 +28,11 @@ generate-migration:  ## Generates a new migration
 		echo "Error: message is required"; \
 		exit 1; \
 	fi
-	docker compose exec api uv run alembic revision --autogenerate -m "$$message"
+	docker compose exec $(.API_CONTAINER_NAME) uv run alembic revision --autogenerate -m "$$message"
 
 .PHONY: migrate
 migrate:  ## Runs the alembic migrations
-	docker compose exec api uv run alembic upgrade head
+	docker compose exec $(.API_CONTAINER_NAME) uv run alembic upgrade head
 
 .PHONY: install
 install:  ## Install the project's dependencies
@@ -39,17 +40,17 @@ install:  ## Install the project's dependencies
 
 .PHONY: format
 format: ## Format the code
-	uv run ruff format src --target-version py312
-	uv run ruff check src --fix --fix-only
+	uv run ruff format $(.PROJECT_NAME) --target-version py312
+	uv run ruff check $(.PROJECT_NAME) --fix --fix-only
 
 .PHONY: typecheck
 typecheck: ## Typecheck the code
-	uv run pyright src
+	uv run pyright $(.PROJECT_NAME)
 
 .PHONY: lint
 lint: ## Lint the code
-	uv run ruff format src --check
-	uv run ruff check src --fix
+	uv run ruff format $(.PROJECT_NAME) --check
+	uv run ruff check $(.PROJECT_NAME) --fix
 
 .PHONY: all
 all: format lint typecheck ## Run format, lint and typecheck 
