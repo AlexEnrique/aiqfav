@@ -1,0 +1,26 @@
+{
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+    ],
+    "typeCheckingMode": "basic",
+    "pythonVersion": "3.12",
+    "pythonPlatform": "Linux",
+    "venvPath": ".",
+    "venv": ".venv",
+    "reportMissingTypeStubs": false,
+    "reportMissingImports": true,
+    "reportGeneralTypeIssues": "warning",
+    "reportOptionalMemberAccess": "warning",
+    "reportOptionalSubscript": "warning",
+    "reportPrivateImportUsage": true,
+    "reportAttributeAccessIssue": true,
+    "extraPaths": [
+        "src"
+    ],
+    "useLibraryCodeForTypes": true,
+    "autoImportCompletions": true
+}

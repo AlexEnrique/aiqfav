@@ -9,3 +9,21 @@ dependencies = [
     "passlib[argon2]>=1.7.4",
     "pyjwt>=2.10.1",
 ]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.405",
+]
+
+[tool.ruff]
+line-length = 79
+target-version = "py312"
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+
