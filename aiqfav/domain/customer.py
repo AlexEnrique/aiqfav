@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 
+from aiqfav.utils.pydantic.types import Password
+
 from .favorite import Favorite
 
 
@@ -16,8 +18,13 @@ class CustomerBase(BaseModel):
 class CustomerCreate(CustomerBase):
     """Modelo para criação de um cliente"""
 
-    password: str = Field(
-        description='Senha do cliente (plana) - Não deve ser salvo no banco de dados, use CustomerWithPassword para salvar a senha hasheada'
+    password: Password = Field(
+        description=(
+            'Senha do cliente (plana) - Não deve ser salvo no banco de '
+            'dados, use CustomerWithPassword para salvar a senha hasheada. '
+            'Deve conter pelo menos 8 caracteres, uma letra maiúscula, uma '
+            'letra minúscula, um número e um símbolo especial.'
+        )
     )
 
 
