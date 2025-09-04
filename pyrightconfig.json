@@ -1,6 +1,6 @@
 {
     "include": [
-        "src"
+        "aiqfav"
     ],
     "exclude": [
         "**/node_modules",
@@ -19,7 +19,7 @@
     "reportPrivateImportUsage": true,
     "reportAttributeAccessIssue": true,
     "extraPaths": [
-        "src"
+        "aiqfav"
     ],
     "useLibraryCodeForTypes": true,
     "autoImportCompletions": true
