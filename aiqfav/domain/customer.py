@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from aiqfav.utils.pydantic.types import Password
 
-from .favorite import Favorite
+from .favorite import FavoriteInDb
 
 
 ### Models
@@ -38,7 +38,7 @@ class CustomerWithFavorites(CustomerBase):
     """Modelo para um cliente"""
 
     id: int = Field(description='ID do cliente', gt=0)
-    favorites: list[Favorite] = Field(
+    favorites: list[FavoriteInDb] = Field(
         default_factory=list,
         description='Lista de produtos favoritos do cliente',
     )
