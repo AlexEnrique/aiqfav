@@ -1,0 +1,11 @@
+[project]
+name = "aiqfav"
+version = "0.1.0"
+description = "API para gerenciar clientes e seus produtos favoritos"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.116.1",
+    "passlib[argon2]>=1.7.4",
+    "pyjwt>=2.10.1",
+]
