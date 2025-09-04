@@ -1,3 +1,6 @@
 # We would add .env here if this were not a demo project
+# .env*
 
 __pycache__/
+.venv/
+.ruff_cache/
