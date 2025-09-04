@@ -74,3 +74,24 @@ class CustomerRepository(abc.ABC):
         Raises:
             CustomerNotFound: if the a customer with the given id cannot be found.
         """
+
+    @abc.abstractmethod
+    async def add_favorite(self, customer_id: int, product_id: int) -> None:
+        """Add a product to customer's favorites.
+
+        Args:
+            customer_id (int): the customer id.
+            product_id (int): the product id.
+        """
+
+    @abc.abstractmethod
+    async def remove_favorite(self, customer_id: int, product_id: int) -> None:
+        """Remove a product from customer's favorites.
+
+        Args:
+            customer_id (int): the customer id.
+            product_id (int): the product id.
+
+        Raises:
+            FavoriteNotFound: if the favorited product was not found for the customer.
+        """

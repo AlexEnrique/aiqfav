@@ -1,4 +1,5 @@
 from sqlalchemy import delete, select
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from aiqfav.domain.customer import (
@@ -78,3 +79,27 @@ class CustomerRepositoryImpl(CustomerRepository):
                 FavoriteInDb.model_validate(favorite)
                 for favorite in favorites_in_db
             ]
+
+    async def add_favorite(self, customer_id: int, product_id: int) -> None:
+        async with self.async_session() as session:
+            stmt = (
+                insert(FavoriteModel)
+                .values(
+                    customer_id=customer_id,
+                    product_id=product_id,
+                )
+                .on_conflict_do_nothing(  # For idempotency
+                    index_elements=['customer_id', 'product_id']
+                )
+            )
+            await session.execute(stmt)
+            await session.commit()
+
+    async def remove_favorite(self, customer_id: int, product_id: int) -> None:
+        async with self.async_session() as session:
+            stmt = delete(FavoriteModel).where(
+                FavoriteModel.customer_id == customer_id,
+                FavoriteModel.product_id == product_id,
+            )
+            await session.execute(stmt)
+            await session.commit()

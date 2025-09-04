@@ -93,3 +93,31 @@ class CustomerService:
             product_ids
         )
         return favorite_products
+
+    async def add_favorite(
+        self, customer_id: int, product_id: int
+    ) -> ProductPublic:
+        """Add a product to customer's favorites.
+
+        Args:
+            customer_id (int): the customer id.
+            product_id (int): the product id.
+        """
+        # Valida se o cliente existe
+        # Raises CustomerNotFound, se o cliente não existe
+        await self.customer_repo.get_customer(id=customer_id)
+
+        # Adiciona o produto aos favoritos do cliente
+        await self.customer_repo.add_favorite(customer_id, product_id)
+
+        return await self.store_api_adapter.get_product(product_id)
+
+    async def remove_favorite(self, customer_id: int, product_id: int) -> None:
+        """Remove a product from customer's favorites.
+
+        Args:
+            customer_id (int): the customer id.
+            product_id (int): the product id.
+        """
+        await self.customer_repo.get_customer(id=customer_id)
+        await self.customer_repo.remove_favorite(customer_id, product_id)
