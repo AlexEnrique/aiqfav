@@ -9,6 +9,7 @@ services:
       - .env
     depends_on:
       - postgres
+      - redis
     volumes:
       - ./aiqfav:/app/aiqfav
       - ./alembic:/app/alembic
