@@ -1,6 +1,6 @@
 import uuid
 from datetime import timedelta
-from typing import Annotated
+from typing import Annotated, Any, Generator
 
 import httpx
 import redis.asyncio as redis
@@ -72,11 +72,11 @@ def get_customer_repository(
 
 def get_store_api_adapter(
     redis: Annotated[RedisAsyncProtocol, Depends(get_redis_adapter)],
-) -> StoreApiAdapter:
+) -> Generator[StoreApiAdapter, Any, Any]:
     """Dependency para obter o adaptador de API de loja"""
-    return FakeStoreApi(
+    yield FakeStoreApi(
         base_url=env('FAKE_STORE_API_URL'),
-        client=httpx.AsyncClient(),
+        client_factory=lambda: httpx.AsyncClient(),
         redis=redis,
     )
 

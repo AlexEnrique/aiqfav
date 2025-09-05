@@ -59,7 +59,7 @@ format: ## Format the code
 
 .PHONY: typecheck
 typecheck: ## Typecheck the code
-	uv run pyright $(.PROJECT_NAME) ./scripts --pythonversion 3.12
+	uv run pyright $(.PROJECT_NAME) ./scripts ./tests --pythonversion 3.12
 
 .PHONY: lint
 lint: ## Lint the code

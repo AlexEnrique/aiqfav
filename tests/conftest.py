@@ -55,8 +55,8 @@ def store_api_adapter(
 ) -> StoreApiAdapter:
     return FakeStoreApi(
         'https://fakestoreapi.com',
-        client_mock,
-        redis_mock,
+        client_factory=lambda: client_mock,
+        redis=redis_mock,
     )
 
 

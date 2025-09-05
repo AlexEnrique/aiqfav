@@ -56,7 +56,7 @@ async def create_admin_customer():
         redis=redis_instance,
         store_api_adapter=FakeStoreApi(
             base_url=env('FAKE_STORE_API_URL'),
-            client=httpx.AsyncClient(),
+            client_factory=lambda: httpx.AsyncClient(),
             redis=redis_instance,
         ),
     )

@@ -1,7 +1,7 @@
 import asyncio
 import json
 import logging
-from typing import Iterable
+from typing import Callable, Iterable
 
 import httpx
 
@@ -19,7 +19,7 @@ class FakeStoreApi(StoreApiAdapter):
     def __init__(
         self,
         base_url: str,
-        client: httpx.AsyncClient,
+        client_factory: Callable[[], httpx.AsyncClient],
         redis: RedisAsyncProtocol,
         cache_expiration: int = 60 * 60,
     ):
@@ -27,7 +27,7 @@ class FakeStoreApi(StoreApiAdapter):
             'base_url must be a non-empty string'
         )
         self.base_url = base_url.rstrip('/')
-        self.client = client
+        self.client_factory = client_factory
         self.redis = redis
         self.cache_expiration = cache_expiration
 
@@ -35,7 +35,7 @@ class FakeStoreApi(StoreApiAdapter):
         """List products from the store API"""
         logging.info('Listing products from the store API')
 
-        async with self.client as client:
+        async with self.client_factory() as client:
             cached_data = await self.redis.get('products')
             if cached_data:
                 logging.debug('Cache hit for products')
@@ -73,7 +73,7 @@ class FakeStoreApi(StoreApiAdapter):
         """Get a product from the store API"""
         logging.info('Getting product %s from the store API', product_id)
 
-        async with self.client as client:
+        async with self.client_factory() as client:
             response = await client.get(
                 f'{self.base_url}/products/{product_id}'
             )
