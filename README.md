@@ -68,3 +68,13 @@ You can also use [this invite link](https://app.getpostman.com/join-team?invite_
 
 In order to test, import the environment variables from `postman/aiqfav.postman_environment.json`,
 and set the `base_url` to `http://localhost:8000`. Other envs will be set automatically on requests.
+
+
+## Architecture
+
+![Architecture](./imgs/aiqfav_arq.drawio.png)
+
+
+## DB diagram
+
+![DB diagram](./imgs/aiqfav_modelagem.drawio.png)
