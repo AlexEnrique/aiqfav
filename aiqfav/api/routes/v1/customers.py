@@ -13,6 +13,7 @@ from aiqfav.domain.customer import (
     CustomerCreate,
     CustomerNotFound,
     CustomerPublic,
+    EmailExistsResponse,
 )
 from aiqfav.domain.favorite import FavoriteUpsert
 from aiqfav.domain.product import ProductPublic
@@ -40,45 +41,6 @@ async def list_customers(
     return await customer_service.list_customers()
 
 
-@router.get(
-    '/customers/me',
-    response_model=CustomerPublic,
-    summary='Buscar cliente por ID',
-    description='Endpoint para buscar um cliente por ID',
-)
-async def get_me(
-    customer: Annotated[CustomerPublic, Depends(get_current_customer)],
-):
-    """Endpoint para buscar o cliente autenticado"""
-    return customer
-
-
-@router.get(
-    '/customers/{customer_id}',
-    response_model=CustomerPublic,
-    summary='Buscar cliente por ID (apenas para administradores)',
-    description='Endpoint para buscar um cliente por ID',
-)
-async def get_customer(
-    customer_service: Annotated[
-        CustomerService, Depends(get_customer_service)
-    ],
-    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
-    customer_id: int,
-):
-    """Endpoint para buscar um cliente por ID"""
-    try:
-        return await customer_service.get_customer_by_id(customer_id)
-    except CustomerNotFound:
-        raise HTTPException(
-            status_code=404,
-            detail=get_error_response(
-                error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
-                message='Cliente não encontrado',
-            ),
-        )
-
-
 @router.post(
     '/customers',
     response_model=CustomerPublic,
@@ -95,7 +57,6 @@ async def create_customer(
     """Endpoint para criar um novo cliente"""
     try:
         customer_created = await customer_service.create_customer(customer)
-        print(type(customer_created))
         return JSONResponse(
             status_code=201, content=customer_created.model_dump()
         )
@@ -109,31 +70,47 @@ async def create_customer(
         )
 
 
-@router.delete(
-    '/customers/{customer_id}',
-    response_class=Response,
-    summary='Deletar cliente (apenas para administradores)',
-    description='Endpoint para deletar um cliente',
+@router.get(
+    '/customers/validate-email',
+    response_model=EmailExistsResponse,
+    status_code=200,
+    summary='Validar e-mail',
+    description='Endpoint para validar se um e-mail já existe',
 )
-async def delete_customer(
+async def validate_email(
     customer_service: Annotated[
         CustomerService, Depends(get_customer_service)
     ],
-    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
-    customer_id: int,
+    email: str,
 ):
-    """Endpoint para deletar um cliente"""
+    """Endpoint para validar se um e-mail já existe"""
     try:
-        await customer_service.delete_customer(customer_id)
-        return Response(status_code=204)
-    except CustomerNotFound:
+        email_valid = await customer_service.check_email_valid(email=email)
+        return EmailExistsResponse(
+            email=email,
+            valid=email_valid,
+        )
+    except EmailAlreadyExists:
         raise HTTPException(
-            status_code=404,
+            status_code=409,
             detail=get_error_response(
-                error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
-                message='Cliente não encontrado',
+                error_code=ErrorCodes.EMAIL_ALREADY_EXISTS,
+                message='Já existe um cliente com este e-mail',
             ),
         )
+
+
+@router.get(
+    '/customers/me',
+    response_model=CustomerPublic,
+    summary='Buscar cliente por ID',
+    description='Endpoint para buscar um cliente por ID',
+)
+async def get_me(
+    customer: Annotated[CustomerPublic, Depends(get_current_customer)],
+):
+    """Endpoint para buscar o cliente autenticado"""
+    return customer
 
 
 @router.get(
@@ -235,6 +212,59 @@ async def remove_favorite_me(
 ):
     try:
         await customer_service.remove_favorite(customer.id, product_id)
+        return Response(status_code=204)
+    except CustomerNotFound:
+        raise HTTPException(
+            status_code=404,
+            detail=get_error_response(
+                error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
+                message='Cliente não encontrado',
+            ),
+        )
+
+
+@router.get(
+    '/customers/{customer_id}',
+    response_model=CustomerPublic,
+    summary='Buscar cliente por ID (apenas para administradores)',
+    description='Endpoint para buscar um cliente por ID',
+)
+async def get_customer(
+    customer_service: Annotated[
+        CustomerService, Depends(get_customer_service)
+    ],
+    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
+    customer_id: int,
+):
+    """Endpoint para buscar um cliente por ID"""
+    try:
+        return await customer_service.get_customer_by_id(customer_id)
+    except CustomerNotFound:
+        raise HTTPException(
+            status_code=404,
+            detail=get_error_response(
+                error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
+                message='Cliente não encontrado',
+            ),
+        )
+
+
+@router.delete(
+    '/customers/{customer_id}',
+    response_class=Response,
+    summary='Deletar cliente (apenas para administradores)',
+    description='Endpoint para deletar um cliente',
+)
+async def delete_customer(
+    customer_service: Annotated[
+        CustomerService, Depends(get_customer_service)
+    ],
+    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
+    customer_id: int,
+):
+    """Endpoint para deletar um cliente"""
+    try:
+        await customer_service.delete_customer(customer_id)
         return Response(status_code=204)
     except CustomerNotFound:
         raise HTTPException(

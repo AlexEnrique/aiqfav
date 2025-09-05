@@ -60,6 +60,18 @@ class CustomerInDb(CustomerBase):
     hashed_password: str = Field(description='Hash da senha do cliente')
 
 
+class EmailExistsResponse(BaseModel):
+    """Modelo para a resposta de validação de e-mail"""
+
+    email: str = Field(description='E-mail a ser validado')
+    valid: bool = Field(
+        description=(
+            'Se o e-mail é válido, ou seja, se não existe um cliente '
+            'com este e-mail'
+        )
+    )
+
+
 ### Exceptions
 class CustomerBaseException(Exception):
     """Base Exception related to customers"""

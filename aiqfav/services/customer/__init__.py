@@ -187,6 +187,25 @@ class CustomerService:
         await self.customer_repo.remove_favorite(customer_id, product_id)
         await self._delete_cached_favorites(customer_id)
 
+    async def check_email_valid(self, email: str) -> bool:
+        """Check if an email is valid, i.e. if it does not exist in
+        the database.
+
+        Args:
+            email (str): the email to check.
+
+        Returns:
+            bool: True if the email is valid, False otherwise.
+        """
+        logging.info('Checking if email %s is valid', email)
+
+        try:
+            await self.customer_repo.get_customer(email=email)
+        except CustomerNotFound:
+            return True
+        else:
+            return False
+
     ### Caching
     async def _get_cached_customer(self, id: int) -> CustomerPublic | None:
         cached_customer_data = await self.redis.get(f'customer:{id}')
