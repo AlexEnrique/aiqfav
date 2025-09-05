@@ -87,10 +87,10 @@ class CustomerRepositoryMock(CustomerRepository):
         ]
 
     async def set_admin(self, id: int) -> None:
-        self._customers = [
-            customer for customer in self._customers if customer.id == id
-        ]
-        self._customers[0].is_admin = True
+        for customer in self._customers:
+            if customer.id == id:
+                customer.is_admin = True
+                break
 
     def _get_next_id(self) -> int:
         max_id = max((customer.id for customer in self._customers), default=0)
