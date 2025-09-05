@@ -2,6 +2,7 @@ import uuid
 from datetime import timedelta
 from typing import Annotated
 
+import httpx
 import redis.asyncio as redis
 from environs import Env
 from fastapi import Depends, HTTPException
@@ -16,6 +17,7 @@ from sqlalchemy.ext.asyncio import (
 from aiqfav.adapters.base import JwtAdapter, StoreApiAdapter
 from aiqfav.adapters.fakestore_api import FakeStoreApi
 from aiqfav.adapters.jwt import JwtAdapterImpl
+from aiqfav.adapters.redis_adapter import RedisAdapter, RedisAsyncProtocol
 from aiqfav.db.base import CustomerRepository
 from aiqfav.db.implementations.customer import CustomerRepositoryImpl
 from aiqfav.domain.customer import (
@@ -48,13 +50,14 @@ def get_pwd_context() -> CryptContext:
     return CryptContext(schemes=['argon2'], deprecated='auto')
 
 
-def get_redis() -> redis.Redis:
+def get_redis_adapter() -> RedisAdapter:
     """Dependency para obter o Redis"""
-    return redis.Redis(
+    redis_client = redis.Redis(
         host=env('REDIS_HOST'),
         port=env.int('REDIS_PORT'),
         db=env.int('REDIS_DB'),
     )
+    return RedisAdapter(redis_client)
 
 
 def get_customer_repository(
@@ -67,10 +70,14 @@ def get_customer_repository(
 
 
 def get_store_api_adapter(
-    redis: Annotated[redis.Redis, Depends(get_redis)],
+    redis: Annotated[RedisAsyncProtocol, Depends(get_redis_adapter)],
 ) -> StoreApiAdapter:
     """Dependency para obter o adaptador de API de loja"""
-    return FakeStoreApi(env('FAKE_STORE_API_URL'), redis)
+    return FakeStoreApi(
+        base_url=env('FAKE_STORE_API_URL'),
+        client=httpx.AsyncClient(),
+        redis=redis,
+    )
 
 
 def get_customer_service(
@@ -81,7 +88,7 @@ def get_customer_service(
         StoreApiAdapter, Depends(get_store_api_adapter)
     ],
     pwd_context: Annotated[CryptContext, Depends(get_pwd_context)],
-    redis: Annotated[redis.Redis, Depends(get_redis)],
+    redis: Annotated[RedisAsyncProtocol, Depends(get_redis_adapter)],
 ) -> CustomerService:
     """Dependency para obter o serviço de clientes"""
     return CustomerService(

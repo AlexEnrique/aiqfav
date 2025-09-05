@@ -66,6 +66,14 @@ lint: ## Lint the code
 	uv run ruff format $(.PROJECT_NAME) --check
 	uv run ruff check $(.PROJECT_NAME) --fix
 
+.PHONY: test
+test: ## Run the tests
+	docker compose exec $(.API_CONTAINER_NAME) uv run pytest
+
+.PHONY: cov
+cov: ## Run the tests with coverage and generate HTML report
+	docker compose exec $(.API_CONTAINER_NAME) uv run pytest --cov=$(.PROJECT_NAME) --cov-report=html
+
 .PHONY: all
 all: format lint typecheck ## Run format, lint and typecheck
 

@@ -84,7 +84,7 @@ class AuthService:
         except (ExpiredToken, InvalidAudience) as e:
             raise InvalidToken('Token inválido ou expirado') from e
 
-        if 'sub' not in token_data:
+        if 'sub' not in token_data:  # pragma: no cover
             raise InvalidToken('Token não contém um ID de cliente')
 
         customer_id = int(token_data['sub'])
@@ -123,7 +123,7 @@ class AuthService:
             },
         }
 
-        if token_type not in specific_data:
+        if token_type not in specific_data:  # pragma: no cover
             raise ValueError(f'Invalid token type: {token_type}')
 
         token_data = {

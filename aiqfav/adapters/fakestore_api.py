@@ -4,8 +4,8 @@ import logging
 from typing import Iterable
 
 import httpx
-import redis.asyncio as redis
 
+from aiqfav.adapters.redis_adapter import RedisAsyncProtocol
 from aiqfav.domain.product import ProductPublic
 from aiqfav.utils.httpx import raise_for_status
 
@@ -19,13 +19,15 @@ class FakeStoreApi(StoreApiAdapter):
     def __init__(
         self,
         base_url: str,
-        redis: redis.Redis,
+        client: httpx.AsyncClient,
+        redis: RedisAsyncProtocol,
         cache_expiration: int = 60 * 60,
     ):
         assert isinstance(base_url, str) and base_url, (
             'base_url must be a non-empty string'
         )
         self.base_url = base_url.rstrip('/')
+        self.client = client
         self.redis = redis
         self.cache_expiration = cache_expiration
 
@@ -33,7 +35,7 @@ class FakeStoreApi(StoreApiAdapter):
         """List products from the store API"""
         logging.info('Listing products from the store API')
 
-        async with httpx.AsyncClient() as session:
+        async with self.client as client:
             cached_data = await self.redis.get('products')
             if cached_data:
                 logging.debug('Cache hit for products')
@@ -44,7 +46,7 @@ class FakeStoreApi(StoreApiAdapter):
             else:
                 logging.debug('Cache miss for products')
 
-            response = await session.get(f'{self.base_url}/products')
+            response = await client.get(f'{self.base_url}/products')
 
             data = raise_for_status(
                 response,
@@ -71,8 +73,8 @@ class FakeStoreApi(StoreApiAdapter):
         """Get a product from the store API"""
         logging.info('Getting product %s from the store API', product_id)
 
-        async with httpx.AsyncClient() as session:
-            response = await session.get(
+        async with self.client as client:
+            response = await client.get(
                 f'{self.base_url}/products/{product_id}'
             )
 

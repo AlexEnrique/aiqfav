@@ -1,9 +1,9 @@
 import logging
 
-import redis.asyncio as redis
 from passlib.context import CryptContext
 
 from aiqfav.adapters.base import StoreApiAdapter
+from aiqfav.adapters.redis_adapter import RedisAsyncProtocol
 from aiqfav.db.base import CustomerRepository
 from aiqfav.domain.customer import (
     CustomerCreate,
@@ -23,7 +23,7 @@ class CustomerService:
         customer_repo: CustomerRepository,
         store_api_adapter: StoreApiAdapter,
         pwd_context: CryptContext,
-        redis: redis.Redis,
+        redis: RedisAsyncProtocol,
         cache_expiration: int = 60 * 60,
     ):
         self.customer_repo = customer_repo
