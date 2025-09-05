@@ -40,3 +40,10 @@ make create-admin
 ```
 
 This will prompt you for the name, email and password of the admin customer.
+
+
+## API Documentation
+The API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs) (Swagger UI)
+or [http://localhost:8000/redoc](http://localhost:8000/redoc) (ReDoc). **Powered by FastAPI**.
+
+You can also get the OpenAPI specification file accessing [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json).
