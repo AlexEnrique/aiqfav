@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, TypeAdapter
 
 
 ### Models
@@ -10,3 +10,7 @@ class ProductPublic(BaseModel):
     image: str = Field(description='URL da imagem do produto')
     price: float = Field(description='Preço do produto')
     rating: float | None = Field(description='Avaliação do produto')
+
+
+### Type Adapters
+ProductListAdapter = TypeAdapter(list[ProductPublic])
