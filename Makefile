@@ -59,7 +59,7 @@ format: ## Format the code
 
 .PHONY: typecheck
 typecheck: ## Typecheck the code
-	uv run pyright $(.PROJECT_NAME)
+	uv run pyright $(.PROJECT_NAME) ./scripts --pythonversion 3.12
 
 .PHONY: lint
 lint: ## Lint the code
@@ -67,11 +67,11 @@ lint: ## Lint the code
 	uv run ruff check $(.PROJECT_NAME) --fix
 
 .PHONY: test
-test: ## Run the tests
+test: dev  ## Run the tests
 	docker compose exec $(.API_CONTAINER_NAME) uv run pytest
 
 .PHONY: cov
-cov: ## Run the tests with coverage and generate HTML report
+cov: dev  ## Run the tests with coverage and generate HTML report
 	docker compose exec $(.API_CONTAINER_NAME) uv run pytest --cov=$(.PROJECT_NAME) --cov-report=html
 
 .PHONY: all

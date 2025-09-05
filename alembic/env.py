@@ -1,14 +1,17 @@
 import asyncio
 from logging.config import fileConfig
 
+from environs import Env
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from environs import Env
+
+from aiqfav.db.implementations import models
+from alembic import context
+
 env = Env()
 env.read_env()
-from alembic import context
-from aiqfav.db.implementations import models
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -48,7 +51,7 @@ def run_migrations_offline() -> None:
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        dialect_opts={'paramstyle': 'named'},
     )
 
     with context.begin_transaction():
@@ -67,13 +70,14 @@ async def run_async_migrations() -> None:
     and associate a connection with the context.
 
     """
+    url = env('DATABASE_URL')
 
     connectable = async_engine_from_config(
         {
             **config.get_section(config.config_ini_section, {}),
-            'sqlalchemy.url': env('DATABASE_URL'),
+            'sqlalchemy.url': url,
         },
-        prefix="sqlalchemy.",
+        prefix='sqlalchemy.',
         poolclass=pool.NullPool,
     )
 

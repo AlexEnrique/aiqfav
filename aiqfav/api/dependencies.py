@@ -39,9 +39,10 @@ http_bearer = HTTPBearer(auto_error=False)
 def get_async_session() -> async_sessionmaker[AsyncSession]:
     """Dependency para obter uma sessão assíncrona"""
     DATABASE_URL = env('DATABASE_URL')
-    engine = create_async_engine(DATABASE_URL, echo=False)
-    # async_sessionmaker: a factory for new AsyncSession objects.
-    # expire_on_commit - don't expire objects after transaction commit
+    engine = create_async_engine(
+        DATABASE_URL,
+        echo=False,
+    )
     return async_sessionmaker(engine, expire_on_commit=False)
 
 

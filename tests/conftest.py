@@ -176,7 +176,7 @@ async def setup_test_db(postgres_db: dict):
     await create_test_database(postgres_db)
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 async def async_session(temp_db_url):
     """Cria uma sessão assíncrona com PostgreSQL temporário."""
     engine = create_async_engine(
@@ -208,3 +208,48 @@ def customer_repo_impl(
 ):
     """Cria uma instância do CustomerRepositoryImpl para testes."""
     return CustomerRepositoryImpl(async_session)
+
+
+@pytest.fixture
+def customer_service_impl(
+    customer_repo_impl: CustomerRepository,
+    store_api_adapter: StoreApiAdapter,
+    pwd_context: CryptContext,
+    redis_mock: RedisAsyncProtocol,
+) -> CustomerService:
+    return CustomerService(
+        customer_repo=customer_repo_impl,
+        store_api_adapter=store_api_adapter,
+        pwd_context=pwd_context,
+        redis=redis_mock,
+    )
+
+
+@pytest.fixture(autouse=True)
+def override_env(temp_db_url: str, monkeypatch: pytest.MonkeyPatch):
+    """Override environment variables for testing."""
+    monkeypatch.setenv('DATABASE_URL', temp_db_url)
+    monkeypatch.setenv('SECRET_KEY', 'secret')
+    monkeypatch.setenv('ALGORITHM', 'HS256')
+
+    from aiqfav.api.dependencies import env
+
+    # Reload env variables
+    env.read_env()
+
+
+@pytest.fixture
+def auth_service_impl(
+    customer_repo_impl: CustomerRepository,
+    pwd_context: CryptContext,
+    jwt_adapter: JwtAdapter,
+) -> AuthService:
+    return AuthService(
+        customer_repo=customer_repo_impl,
+        pwd_context=pwd_context,
+        jwt_adapter=jwt_adapter,
+        access_token_expiration=timedelta(days=1),
+        refresh_token_expiration=timedelta(days=30),
+        jti_generator=lambda: uuid.uuid4().hex,
+        jwt_issuer='aiqfav',
+    )
