@@ -52,3 +52,7 @@ You can also get the OpenAPI specification file accessing [http://localhost:8000
 ## Tests
 To run the tests, run `make test`.
 To run the tests with coverage, run `make cov` The report will be available at `htmlcov/index.html`.
+
+
+## Current coverage
+Current coverage is `86%`.
