@@ -107,6 +107,11 @@ class CustomerService:
         await self._delete_cached_customer(id)
         await self._delete_cached_customers()
 
+    async def check_is_admin(self, id: int) -> bool:
+        logging.info('Checking if customer %s is admin', id)
+        customer_in_db = await self.customer_repo.get_customer(id=id)
+        return customer_in_db.is_admin
+
     async def list_favorites_for_customer(
         self, customer_id: int
     ) -> list[ProductPublic]:

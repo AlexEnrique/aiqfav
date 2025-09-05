@@ -31,7 +31,7 @@ env = Env()
 env.read_env()
 
 
-http_bearer = HTTPBearer()
+http_bearer = HTTPBearer(auto_error=False)
 
 
 def get_async_session() -> async_sessionmaker[AsyncSession]:
@@ -130,13 +130,25 @@ def get_auth_service(
 
 
 async def get_current_customer(
-    credentials: Annotated[HTTPAuthorizationCredentials, Depends(http_bearer)],
+    credentials: Annotated[
+        HTTPAuthorizationCredentials | None, Depends(http_bearer)
+    ],
     auth_service: Annotated[AuthService, Depends(get_auth_service)],
     customer_service: Annotated[
         CustomerService, Depends(get_customer_service)
     ],
 ) -> CustomerPublic:
     """Dependency para obter o cliente autenticado"""
+    if credentials is None:
+        raise HTTPException(
+            status_code=401,
+            detail=get_error_response(
+                error_code=ErrorCodes.MISSING_TOKEN,
+                message='Token não encontrado',
+            ),
+            headers={'WWW-Authenticate': 'Bearer'},
+        )
+
     access_token = credentials.credentials
     try:
         customer_id = auth_service.get_customer_id_from_token(
@@ -152,3 +164,26 @@ async def get_current_customer(
             ),
             headers={'WWW-Authenticate': 'Bearer'},
         )
+
+
+async def get_current_admin(
+    customer: Annotated[CustomerPublic, Depends(get_current_customer)],
+    customer_service: Annotated[
+        CustomerService, Depends(get_customer_service)
+    ],
+) -> CustomerPublic:
+    """Dependency para obter o administrador autenticado.
+
+    Raises:
+        HTTPException: Se o cliente não for administrador.
+    """
+    if not await customer_service.check_is_admin(customer.id):
+        raise HTTPException(
+            status_code=403,
+            detail=get_error_response(
+                error_code=ErrorCodes.FORBIDDEN,
+                message='O cliente não é um administrador',
+            ),
+        )
+
+    return customer

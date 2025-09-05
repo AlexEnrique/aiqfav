@@ -54,6 +54,9 @@ class CustomerInDb(CustomerBase):
     """Modelo para um cliente no banco de dados"""
 
     id: int = Field(description='ID do cliente', gt=0)
+    is_admin: bool = Field(
+        description='Se o cliente é administrador', default=False
+    )
     hashed_password: str = Field(description='Hash da senha do cliente')
 
 

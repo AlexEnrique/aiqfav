@@ -15,6 +15,8 @@ class ErrorCodes(StrEnum):
     PRODUCT_NOT_FOUND = 'product_not_found'
     INVALID_CREDENTIALS = 'invalid_credentials'
     INVALID_TOKEN = 'invalid_token'
+    MISSING_TOKEN = 'missing_token'
+    FORBIDDEN = 'forbidden'
 
 
 def get_error_response(

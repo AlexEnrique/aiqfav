@@ -4,7 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse, Response
 
 from aiqfav.adapters.exceptions import StoreApiNotFoundError
-from aiqfav.api.dependencies import get_current_customer, get_customer_service
+from aiqfav.api.dependencies import (
+    get_current_admin,
+    get_current_customer,
+    get_customer_service,
+)
 from aiqfav.domain.customer import (
     CustomerCreate,
     CustomerNotFound,
@@ -31,6 +35,7 @@ async def list_customers(
     customer_service: Annotated[
         CustomerService, Depends(get_customer_service)
     ],
+    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
 ):
     return await customer_service.list_customers()
 
@@ -58,6 +63,7 @@ async def get_customer(
     customer_service: Annotated[
         CustomerService, Depends(get_customer_service)
     ],
+    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
     customer_id: int,
 ):
     """Endpoint para buscar um cliente por ID"""
@@ -113,6 +119,7 @@ async def delete_customer(
     customer_service: Annotated[
         CustomerService, Depends(get_customer_service)
     ],
+    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
     customer_id: int,
 ):
     """Endpoint para deletar um cliente"""
