@@ -130,6 +130,116 @@ async def delete_customer(
 
 
 @router.get(
+    '/customers/me/favorites',
+    response_model=list[ProductPublic],
+    summary='Listar produtos favoritos do cliente autenticado',
+    description='Endpoint para listar todos os produtos favoritos do cliente autenticado',
+)
+async def list_favorites_me(
+    customer_service: Annotated[
+        CustomerService, Depends(get_customer_service)
+    ],
+    customer: Annotated[CustomerPublic, Depends(get_current_customer)],
+):
+    try:
+        return await customer_service.list_favorites_for_customer(customer.id)
+    except CustomerNotFound:
+        raise HTTPException(
+            status_code=404,
+            detail=get_error_response(
+                error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
+                message='Cliente não encontrado',
+            ),
+        )
+
+
+@router.put(
+    '/customers/me/favorites',
+    summary='Adicionar produto favorito do cliente autenticado',
+    response_model=ProductPublic,
+    responses={
+        200: {
+            'description': 'Produto favorito adicionado com sucesso',
+        },
+        404: {
+            'description': 'Cliente não encontrado',
+        },
+    },
+    description=(
+        'Endpoint para adicionar um produto aos favoritos do cliente autenticado. Este '
+        'endpoint é idempotente, podendo ser chamado várias vezes com o '
+        'mesmo payload, sem causar erros. Retorna 200 em caso de sucesso, '
+        'contendo o produto adicionado.'
+    ),
+)
+async def add_favorite_me(
+    customer_service: Annotated[
+        CustomerService, Depends(get_customer_service)
+    ],
+    customer: Annotated[CustomerPublic, Depends(get_current_customer)],
+    payload: FavoriteUpsert,
+):
+    try:
+        return await customer_service.add_favorite(
+            customer.id, payload.product_id
+        )
+    except CustomerNotFound:
+        raise HTTPException(
+            status_code=404,
+            detail=get_error_response(
+                error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
+                message='Cliente não encontrado',
+            ),
+        )
+    except StoreApiNotFoundError:
+        raise HTTPException(
+            status_code=404,
+            detail=get_error_response(
+                error_code=ErrorCodes.PRODUCT_NOT_FOUND,
+                message='Produto não encontrado',
+            ),
+        )
+
+
+@router.delete(
+    '/customers/me/favorites/{product_id}',
+    summary='Remover produto dos favoritos do cliente autenticado',
+    response_class=Response,
+    status_code=204,
+    responses={
+        204: {
+            'description': 'Produto favorito removido com sucesso',
+        },
+        404: {
+            'description': 'Cliente não encontrado',
+        },
+    },
+    description=(
+        'Endpoint para remover um produto dos favoritos do cliente autenticado. '
+        'Retorna 204 em caso de sucesso.'
+    ),
+)
+async def remove_favorite_me(
+    customer_service: Annotated[
+        CustomerService, Depends(get_customer_service)
+    ],
+    customer: Annotated[CustomerPublic, Depends(get_current_customer)],
+    product_id: int,
+):
+    try:
+        await customer_service.remove_favorite(customer.id, product_id)
+        return Response(status_code=204)
+    except CustomerNotFound:
+        raise HTTPException(
+            status_code=404,
+            detail=get_error_response(
+                error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
+                message='Cliente não encontrado',
+            ),
+        )
+
+
+@router.get(
     '/customers/{customer_id}/favorites',
     response_model=list[ProductPublic],
     summary='Listar produtos favoritos',
