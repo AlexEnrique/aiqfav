@@ -11,3 +11,7 @@ class AuthPairTokensRequest(BaseModel):
 class AuthPairTokensResponse(BaseModel):
     access_token: str = Field(description='Token de acesso')
     refresh_token: str = Field(description='Token de refresh')
+
+
+class AuthRefreshTokenRequest(BaseModel):
+    refresh_token: str = Field(description='Token de refresh')

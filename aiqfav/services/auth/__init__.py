@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Callable
+from typing import Callable, Literal
 
 from passlib.context import CryptContext
 
@@ -63,7 +63,9 @@ class AuthService:
 
         return access_token, refresh_token
 
-    def get_customer_id_from_token(self, token: str) -> int:
+    def get_customer_id_from_token(
+        self, token: str, *, token_type: Literal['access', 'refresh']
+    ) -> int:
         """Get the customer ID from a token
 
         Args:
@@ -78,7 +80,7 @@ class AuthService:
         logging.info('Getting customer ID from token')
 
         try:
-            token_data = self.jwt_adapter.decode(token, audience=['access'])
+            token_data = self.jwt_adapter.decode(token, audience=[token_type])
         except (ExpiredToken, InvalidAudience) as e:
             raise InvalidToken('Token inválido ou expirado') from e
 
@@ -89,6 +91,19 @@ class AuthService:
         logging.debug('Customer ID: %s', customer_id)
 
         return customer_id
+
+    def refresh_token(self, refresh_token: str) -> tuple[str, str]:
+        """Refresh a token
+
+        Args:
+            refresh_token (str): The refresh token to refresh.
+        """
+        logging.info('Refreshing token')
+        customer_id = self.get_customer_id_from_token(
+            refresh_token, token_type='refresh'
+        )
+        access_token, refresh_token = self._generate_tokens(customer_id)
+        return access_token, refresh_token
 
     def _generate_tokens(self, customer_id: int) -> tuple[str, str]:
         access_token = self._generate_token(customer_id, 'access')

@@ -139,7 +139,9 @@ async def get_current_customer(
     """Dependency para obter o cliente autenticado"""
     access_token = credentials.credentials
     try:
-        customer_id = auth_service.get_customer_id_from_token(access_token)
+        customer_id = auth_service.get_customer_id_from_token(
+            access_token, token_type='access'
+        )
         return await customer_service.get_customer_by_id(customer_id)
     except (InvalidToken, CustomerNotFound):
         raise HTTPException(
