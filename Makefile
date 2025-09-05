@@ -48,6 +48,10 @@ generate-migration:  ## Generates a new migration
 migrate:  ## Runs the alembic migrations
 	docker compose exec $(.API_CONTAINER_NAME) uv run alembic upgrade head
 
+.PHONY: create-admin
+create-admin:  ## Creates a new admin customer
+	docker compose exec -it $(.API_CONTAINER_NAME) uv run python -m scripts.create_admin_customer
+
 .PHONY: format
 format: ## Format the code
 	uv run ruff format $(.PROJECT_NAME) --target-version py312

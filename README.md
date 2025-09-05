@@ -32,3 +32,11 @@ API to manage customers and their favorite products.
 ```bash
 docker compose up -d --build
 ```
+
+## Create an admin customer/user
+Some endpoints require an admin customer. You can create one with the following command:
+```bash
+make create-admin
+```
+
+This will prompt you for the name, email and password of the admin customer.

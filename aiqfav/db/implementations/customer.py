@@ -1,4 +1,4 @@
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -107,3 +107,20 @@ class CustomerRepositoryImpl(CustomerRepository):
             )
             await session.execute(stmt)
             await session.commit()
+
+    async def set_admin(self, id: int) -> CustomerInDb:
+        """Set a customer as admin.
+
+        Args:
+            id (int): the customer id.
+        """
+        async with self.async_session() as session:
+            stmt = (
+                update(CustomerModel)
+                .where(CustomerModel.id == id)
+                .values(is_admin=True)
+            )
+            await session.execute(stmt)
+            await session.commit()
+
+        return await self.get_customer(id=id)

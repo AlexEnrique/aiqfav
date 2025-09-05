@@ -11,6 +11,7 @@ services:
       - postgres
       - redis
     volumes:
+      - ./scripts:/app/scripts
       - ./aiqfav:/app/aiqfav
       - ./alembic:/app/alembic
     working_dir: /app

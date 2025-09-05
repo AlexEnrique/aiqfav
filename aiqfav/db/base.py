@@ -95,3 +95,11 @@ class CustomerRepository(abc.ABC):
         Raises:
             FavoriteNotFound: if the favorited product was not found for the customer.
         """
+
+    @abc.abstractmethod
+    async def set_admin(self, id: int) -> None:
+        """Set a customer as admin.
+
+        Args:
+            id (int): the customer id.
+        """
