@@ -14,7 +14,7 @@ from aiqfav.domain.customer import (
 )
 from aiqfav.domain.product import ProductListAdapter, ProductPublic
 
-from .exceptions import EmailAlreadyExists, InvalidCredentials
+from .exceptions import EmailAlreadyExists
 
 
 class CustomerService:
@@ -99,25 +99,6 @@ class CustomerService:
         await self._delete_cached_customers()
 
         return new_customer
-
-    async def authenticate_customer(
-        self, email: str, password: str
-    ) -> CustomerPublic:
-        logging.info('Authenticating customer %s', email)
-
-        invalid_credentials_exception = InvalidCredentials(
-            'E-mail ou senha incorretos'
-        )
-
-        try:
-            customer = await self.customer_repo.get_customer(email=email)
-        except CustomerNotFound:
-            raise invalid_credentials_exception
-
-        if not self.pwd_context.verify(password, customer.hashed_password):
-            raise invalid_credentials_exception
-
-        return CustomerPublic.model_validate(customer)
 
     async def delete_customer(self, id: int) -> None:
         logging.info('Deleting customer %s', id)

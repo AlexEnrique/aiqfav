@@ -13,6 +13,7 @@ class ErrorCodes(StrEnum):
     CUSTOMER_NOT_FOUND = 'customer_not_found'
     FAVORITE_NOT_FOUND = 'favorite_not_found'
     PRODUCT_NOT_FOUND = 'product_not_found'
+    INVALID_CREDENTIALS = 'invalid_credentials'
 
 
 def get_error_response(

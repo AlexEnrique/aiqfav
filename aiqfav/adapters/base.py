@@ -48,3 +48,18 @@ class StoreApiAdapter(abc.ABC):
             StoreApiNotFoundError: if one of the products is not found.
             StoreApiUnexpectedResponseError: in case of unexpected response.
         """
+
+
+class JwtAdapter(abc.ABC):
+    """Base class for JWT adapters"""
+
+    @abc.abstractmethod
+    def __init__(self, secret: str, algorithm: str): ...
+
+    @abc.abstractmethod
+    def encode(self, payload: dict) -> str:
+        """Encode a payload into a JWT"""
+
+    @abc.abstractmethod
+    def decode(self, token: str) -> dict:
+        """Decode a JWT into a payload"""

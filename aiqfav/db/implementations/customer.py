@@ -31,8 +31,12 @@ class CustomerRepositoryImpl(CustomerRepository):
             result = await session.execute(stmt)
             customer = result.scalar_one_or_none()
 
-            if not customer:
+            if not customer and id:
                 raise CustomerNotFound(f'Customer with id {id} not found')
+            elif not customer and email:
+                raise CustomerNotFound(
+                    f'Customer with email {email} not found'
+                )
 
             return CustomerInDb.model_validate(customer)
 
