@@ -1,6 +1,8 @@
 # aiqfav API
 API to manage customers and their favorite products.
 
+[Video about my decision in this API](https://drive.google.com/file/d/1dgPftQRKJ6TSB_YSO-ka0WzO3hG6Jo1P/view?usp=sharing)
+
 > Not ready for production. To prepare for production, you would need to:
 > - gitignore the `.env` file and add appropriate envs
 > - add a production database
