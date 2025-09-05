@@ -4,6 +4,7 @@ import asyncio
 import getpass
 import sys
 
+import httpx
 import redis.asyncio as redis
 from environs import Env
 from passlib.context import CryptContext
@@ -15,6 +16,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from aiqfav.adapters.fakestore_api import FakeStoreApi
+from aiqfav.adapters.redis_adapter import RedisAdapter
 from aiqfav.db.implementations.customer import CustomerRepositoryImpl
 from aiqfav.domain.customer import CustomerCreate
 from aiqfav.services.admin import AdminService
@@ -29,8 +31,6 @@ def get_async_session() -> async_sessionmaker[AsyncSession]:
     """Dependency para obter uma sessão assíncrona"""
     DATABASE_URL = env('DATABASE_URL')
     engine = create_async_engine(DATABASE_URL, echo=False)
-    # async_sessionmaker: a factory for new AsyncSession objects.
-    # expire_on_commit - don't expire objects after transaction commit
     return async_sessionmaker(engine, expire_on_commit=False)
 
 
@@ -42,10 +42,12 @@ async def create_admin_customer():
     # (https://python-dependency-injector.ets-labs.org/)
     customer_repo = CustomerRepositoryImpl(get_async_session())
     pwd_context = CryptContext(schemes=['argon2'], deprecated='auto')
-    redis_instance = redis.Redis(
-        host=env('REDIS_HOST'),
-        port=env.int('REDIS_PORT'),
-        db=env.int('REDIS_DB'),
+    redis_instance = RedisAdapter(
+        redis.Redis(
+            host=env('REDIS_HOST'),
+            port=env.int('REDIS_PORT'),
+            db=env.int('REDIS_DB'),
+        )
     )
 
     customer_service = CustomerService(
@@ -53,8 +55,9 @@ async def create_admin_customer():
         pwd_context=pwd_context,
         redis=redis_instance,
         store_api_adapter=FakeStoreApi(
-            env('FAKE_STORE_API_URL'),
-            redis_instance,
+            base_url=env('FAKE_STORE_API_URL'),
+            client=httpx.AsyncClient(),
+            redis=redis_instance,
         ),
     )
 
