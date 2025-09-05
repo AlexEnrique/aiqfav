@@ -47,3 +47,8 @@ The API documentation is available at [http://localhost:8000/docs](http://localh
 or [http://localhost:8000/redoc](http://localhost:8000/redoc) (ReDoc). **Powered by FastAPI**.
 
 You can also get the OpenAPI specification file accessing [http://localhost:8000/openapi.json](http://localhost:8000/openapi.json).
+
+
+## Tests
+To run the tests, run `make test`.
+To run the tests with coverage, run `make cov` The report will be available at `htmlcov/index.html`.
