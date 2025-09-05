@@ -31,7 +31,9 @@ class Favorite(Base):
     __tablename__ = 'favorite'
 
     customer_id: Mapped[int] = mapped_column(
-        ForeignKey('customer.id'), primary_key=True
+        ForeignKey('customer.id', ondelete='CASCADE'),
+        primary_key=True,
+        index=True,
     )
     product_id: Mapped[int] = mapped_column(BigInteger(), primary_key=True)
 
