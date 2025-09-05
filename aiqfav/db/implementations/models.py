@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import BigInteger, ForeignKey, String
+from sqlalchemy import BigInteger, Boolean, ForeignKey, String
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -17,6 +17,7 @@ class Customer(Base):
     )
     name: Mapped[str] = mapped_column(String(255))
     email: Mapped[str] = mapped_column(String(255), unique=True)
+    is_admin: Mapped[bool] = mapped_column(Boolean(), default=False)
     hashed_password: Mapped[str] = mapped_column(String(255))
 
     favorites: Mapped[list[Favorite]] = relationship(
