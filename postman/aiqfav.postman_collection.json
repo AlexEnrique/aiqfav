@@ -1,0 +1,1867 @@
+{
+	"info": {
+		"_postman_id": "66ba440a-bc44-4de1-aa59-1b63d55dcb0a",
+		"name": "aiqfav - API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23940750",
+		"_collection_link": "https://www.postman.com/winter-spaceship-272295/workspace/aiqfav-alex-enrique-crispim/collection/23940750-66ba440a-bc44-4de1-aa59-1b63d55dcb0a?action=share&source=collection_link&creator=23940750"
+	},
+	"item": [
+		{
+			"name": "API v1",
+			"item": [
+				{
+					"name": "Autenticação",
+					"item": [
+						{
+							"name": "Obter par de tokens",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"",
+											"if (pm.response.code == 200) {",
+											"    const payload = pm.response.json()",
+											"    const { access_token, refresh_token } = payload",
+											"    pm.environment.set('access_token', access_token)",
+											"    pm.environment.set('refresh_token', refresh_token)",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"alex7@example.com\",\n    \"password\": \"e0$XSbpi6r2Vw\" \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/auth/pair",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"pair"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Sucesso",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"email\": \"alex2@example.com\",\n    \"password\": \"e0$XSbpi6r2Vw\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/auth/pair",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"auth",
+												"pair"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:20:10 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "511"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1N2IzNDY1OTlhNzA0NjY3OGM3NmI5MTVmMjM5ZmU3MSIsImlzcyI6ImFpcWZhdiIsImlhdCI6MTc1NzA4MjAxMCwic3ViIjoiOCIsImF1ZCI6ImFjY2VzcyIsImV4cCI6MTc1NzA4MjkxMH0.NI9QFJ2ss4M22qh_2K63gOH1RYlAxadX40AM6NQ4l38\",\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNDJkN2EyOGM3ZTY0N2M2OGRiNTA2YWRjOGY5ZmNhZSIsImlzcyI6ImFpcWZhdiIsImlhdCI6MTc1NzA4MjAxMCwic3ViIjoiOCIsImF1ZCI6InJlZnJlc2giLCJleHAiOjE3NTgzNzgwMTB9.00wvqcALk1nuO9NE8BcczoS9TWiugSe_KjG5O6dEGgE\"\n}"
+								},
+								{
+									"name": "Credenciais inválidas",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"email\": \"alex@example.com\",\n    \"password\": \"e0$XSbpi6r2Vw\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/auth/pair",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"auth",
+												"pair"
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:55:25 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "80"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"invalid_credentials\",\n        \"message\": \"E-mail ou senha incorretos\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Refresh token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"",
+											"if (pm.response.code == 200) {",
+											"    const payload = pm.response.json()",
+											"    const { access_token, refresh_token } = payload",
+											"    pm.environment.set('access_token', access_token)",
+											"    pm.environment.set('refresh_token', refresh_token)",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/auth/refresh",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"refresh"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Sucesso",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/auth/refresh",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"auth",
+												"refresh"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:28:58 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "511"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzYzE5ODcyZTFlMTg0ODIwYmQ2MTlkMTA2NGM3MjBmZiIsImlzcyI6ImFpcWZhdiIsImlhdCI6MTc1NzA4MjUzOCwic3ViIjoiOCIsImF1ZCI6ImFjY2VzcyIsImV4cCI6MTc1NzA4MzQzOH0.SSJQqK_UGB3vf1dHb3gZSpNTVq-mQfyoFaZOyj8Ys-I\",\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyOTczMDJlOWE2ODI0N2ZlODYxNWU2ODcyZjFlNWNlNiIsImlzcyI6ImFpcWZhdiIsImlhdCI6MTc1NzA4MjUzOCwic3ViIjoiOCIsImF1ZCI6InJlZnJlc2giLCJleHAiOjE3NTgzNzg1Mzh9.GLNgVTJYdMppSj3KRz71vUYxbz1hufGXuCd3viVBj30\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Clientes [Público]",
+					"item": [
+						{
+							"name": "Cadastrar um cliente",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Alex Enrique Crispim\",\n    \"email\": \"alex8@example.com\",\n    \"password\": \"e0$XSbpi6r2Vw\" // Deve conter 8+ caracteres, pelo menos um caratere especial, um número, uma letra maiúscula e uma letra minúscula \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/customers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"customers"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Cadastrar um cliente",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name\": \"Alex Enrique Crispim\",\n    \"email\": \"alex3@example.com\",\n    \"password\": \"e0$XSbpi6r2Vw\" // Deve conter 8+ caracteres, pelo menos um caratere especial, um número, uma letra maiúscula e uma letra minúscula \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/customers",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:45:48 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "67"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"name\": \"Alex Enrique Crispim\",\n    \"email\": \"alex3@example.com\",\n    \"id\": 10\n}"
+								},
+								{
+									"name": "E-mail já existe",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name\": \"Alex Enrique Crispim\",\n    \"email\": \"alex2@example.com\",\n    \"password\": \"e0$XSbpi6r2Vw\" // Deve conter 8+ caracteres, pelo menos um caratere especial, um número, uma letra maiúscula e uma letra minúscula \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/customers",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers"
+											]
+										}
+									},
+									"status": "Conflict",
+									"code": 409,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 15:19:32 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "92"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"email_already_exists\",\n        \"message\": \"Já existe um cliente com este e-mail\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Validar E-mail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/customers/validate-email?email=alex999@example.com",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"customers",
+										"validate-email"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "alex999@example.com"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Sucesso",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/validate-email?email=alex999@example.com",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												"validate-email"
+											],
+											"query": [
+												{
+													"key": "email",
+													"value": "alex999@example.com"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 16:33:41 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "44"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"email\": \"alex999@example.com\",\n    \"valid\": true\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Clientes [Admin apenas]",
+					"item": [
+						{
+							"name": "Favoritos",
+							"item": [
+								{
+									"name": "Listar favoritos",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id/favorites",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id",
+												"favorites"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Sucesso",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/v1/customers/me/favorites",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														"me",
+														"favorites"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 14:35:07 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												},
+												{
+													"key": "content-length",
+													"value": "603"
+												},
+												{
+													"key": "content-type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\": 1,\n        \"title\": \"Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops\",\n        \"image\": \"https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png\",\n        \"price\": 109.95,\n        \"rating\": 3.9\n    },\n    {\n        \"id\": 2,\n        \"title\": \"Mens Casual Premium Slim Fit T-Shirts \",\n        \"image\": \"https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_t.png\",\n        \"price\": 22.3,\n        \"rating\": 4.1\n    },\n    {\n        \"id\": 3,\n        \"title\": \"Mens Cotton Jacket\",\n        \"image\": \"https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_t.png\",\n        \"price\": 55.99,\n        \"rating\": 4.7\n    },\n    {\n        \"id\": 4,\n        \"title\": \"Mens Casual Slim Fit\",\n        \"image\": \"https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png\",\n        \"price\": 15.99,\n        \"rating\": 2.1\n    }\n]"
+										},
+										{
+											"name": "Cliente não é admin",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/v1/customers/:customer_id/favorites",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														":customer_id",
+														"favorites"
+													],
+													"variable": [
+														{
+															"key": "customer_id",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "Forbidden",
+											"code": 403,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 15:37:14 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												},
+												{
+													"key": "content-length",
+													"value": "78"
+												},
+												{
+													"key": "content-type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"detail\": {\n        \"type\": \"forbidden\",\n        \"message\": \"O cliente não é um administrador\"\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "Adicionar favorito",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"product_id\": 1\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id/favorites",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id",
+												"favorites"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Sucesso",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"product_id\": 4\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url}}/v1/customers/me/favorites",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														"me",
+														"favorites"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 14:35:02 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												},
+												{
+													"key": "content-length",
+													"value": "133"
+												},
+												{
+													"key": "content-type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"id\": 4,\n    \"title\": \"Mens Casual Slim Fit\",\n    \"image\": \"https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png\",\n    \"price\": 15.99,\n    \"rating\": 2.1\n}"
+										},
+										{
+											"name": "Produto inexistente",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"product_id\": 9999\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url}}/v1/customers/me/favorites",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														"me",
+														"favorites"
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 14:42:45 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												},
+												{
+													"key": "content-length",
+													"value": "75"
+												},
+												{
+													"key": "content-type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"detail\": {\n        \"type\": \"product_not_found\",\n        \"message\": \"Produto não encontrado\"\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "Remover favorito",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id/favorites/:product_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id",
+												"favorites",
+												":product_id"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "1"
+												},
+												{
+													"key": "product_id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Sucesso",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/v1/customers/me/favorites/:product_id",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														"me",
+														"favorites",
+														":product_id"
+													],
+													"variable": [
+														{
+															"key": "product_id",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": "plain",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 14:36:15 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												}
+											],
+											"cookie": [],
+											"body": null
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Obter um cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/customers/:customer_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"customers",
+										":customer_id"
+									],
+									"variable": [
+										{
+											"key": "customer_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Cliente não encontrado",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "999"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:54:51 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "76"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"customer_not_found\",\n        \"message\": \"Cliente não encontrado\"\n    }\n}"
+								},
+								{
+									"name": "Cliente não é admin",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 15:27:45 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "78"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"forbidden\",\n        \"message\": \"O cliente não é um administrador\"\n    }\n}"
+								},
+								{
+									"name": "Obter um cliente",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 16:06:54 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "65"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"name\": \"Alex Enrique Crispim\",\n    \"email\": \"alex@example.com\",\n    \"id\": 1\n}"
+								}
+							]
+						},
+						{
+							"name": "Deletar um cliente",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/customers/:customer_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"customers",
+										":customer_id"
+									],
+									"variable": [
+										{
+											"key": "customer_id",
+											"value": "13"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Cliente não encontrado",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "9"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:46:43 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "76"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"customer_not_found\",\n        \"message\": \"Cliente não encontrado\"\n    }\n}"
+								},
+								{
+									"name": "Sucesso",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "8"
+												}
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "plain",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:53:10 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										}
+									],
+									"cookie": [],
+									"body": null
+								},
+								{
+									"name": "Cliente não é admin",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/:customer_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												":customer_id"
+											],
+											"variable": [
+												{
+													"key": "customer_id",
+													"value": "8"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 15:27:21 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "78"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"forbidden\",\n        \"message\": \"O cliente não é um administrador\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Listas clientes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/customers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"customers"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Listas clientes",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 15:08:55 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "135"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"name\": \"Alex Enrique Crispim\",\n        \"email\": \"alex@example.com\",\n        \"id\": 1\n    },\n    {\n        \"name\": \"Alex Enrique Crispim\",\n        \"email\": \"alex3@example.com\",\n        \"id\": 10\n    }\n]"
+								},
+								{
+									"name": "Cliente não é um admin",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers"
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 15:26:24 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "78"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"forbidden\",\n        \"message\": \"O cliente não é um administrador\"\n    }\n}"
+								},
+								{
+									"name": "Token faltando",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers"
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 15:26:56 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "www-authenticate",
+											"value": "Bearer"
+										},
+										{
+											"key": "content-length",
+											"value": "69"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"missing_token\",\n        \"message\": \"Token não encontrado\"\n    }\n}"
+								},
+								{
+									"name": "Token inválido ou expirado",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers"
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 15:36:49 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "www-authenticate",
+											"value": "Bearer"
+										},
+										{
+											"key": "content-length",
+											"value": "75"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"invalid_token\",\n        \"message\": \"Token inválido ou expirado\"\n    }\n}"
+								}
+							]
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{access_token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Produtos",
+					"item": [
+						{
+							"name": "Listar todos os produtos",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Alex Enrique Crispim\",\n    \"email\": \"alex3@example.com\",\n    \"password\": \"e0$XSbpi6r2Vw\" // Deve conter 8+ caracteres, pelo menos um caratere especial, um número, uma letra maiúscula e uma letra minúscula \n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"products"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Listar todos os produtos",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name\": \"Alex Enrique Crispim\",\n    \"email\": \"alex3@example.com\",\n    \"password\": \"e0$XSbpi6r2Vw\" // Deve conter 8+ caracteres, pelo menos um caratere especial, um número, uma letra maiúscula e uma letra minúscula \n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/products",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"products"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:55:58 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "3370"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"title\": \"Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops\",\n        \"image\": \"https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png\",\n        \"price\": 109.95,\n        \"rating\": 3.9\n    },\n    {\n        \"id\": 2,\n        \"title\": \"Mens Casual Premium Slim Fit T-Shirts \",\n        \"image\": \"https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_t.png\",\n        \"price\": 22.3,\n        \"rating\": 4.1\n    },\n    {\n        \"id\": 3,\n        \"title\": \"Mens Cotton Jacket\",\n        \"image\": \"https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_t.png\",\n        \"price\": 55.99,\n        \"rating\": 4.7\n    },\n    {\n        \"id\": 4,\n        \"title\": \"Mens Casual Slim Fit\",\n        \"image\": \"https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png\",\n        \"price\": 15.99,\n        \"rating\": 2.1\n    },\n    {\n        \"id\": 5,\n        \"title\": \"John Hardy Women's Legends Naga Gold & Silver Dragon Station Chain Bracelet\",\n        \"image\": \"https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_t.png\",\n        \"price\": 695,\n        \"rating\": 4.6\n    },\n    {\n        \"id\": 6,\n        \"title\": \"Solid Gold Petite Micropave \",\n        \"image\": \"https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_t.png\",\n        \"price\": 168,\n        \"rating\": 3.9\n    },\n    {\n        \"id\": 7,\n        \"title\": \"White Gold Plated Princess\",\n        \"image\": \"https://fakestoreapi.com/img/71YAIFU48IL._AC_UL640_QL65_ML3_t.png\",\n        \"price\": 9.99,\n        \"rating\": 3\n    },\n    {\n        \"id\": 8,\n        \"title\": \"Pierced Owl Rose Gold Plated Stainless Steel Double\",\n        \"image\": \"https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_t.png\",\n        \"price\": 10.99,\n        \"rating\": 1.9\n    },\n    {\n        \"id\": 9,\n        \"title\": \"WD 2TB Elements Portable External Hard Drive - USB 3.0 \",\n        \"image\": \"https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_t.png\",\n        \"price\": 64,\n        \"rating\": 3.3\n    },\n    {\n        \"id\": 10,\n        \"title\": \"SanDisk SSD PLUS 1TB Internal SSD - SATA III 6 Gb/s\",\n        \"image\": \"https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_t.png\",\n        \"price\": 109,\n        \"rating\": 2.9\n    },\n    {\n        \"id\": 11,\n        \"title\": \"Silicon Power 256GB SSD 3D NAND A55 SLC Cache Performance Boost SATA III 2.5\",\n        \"image\": \"https://fakestoreapi.com/img/71kWymZ+c+L._AC_SX679_t.png\",\n        \"price\": 109,\n        \"rating\": 4.8\n    },\n    {\n        \"id\": 12,\n        \"title\": \"WD 4TB Gaming Drive Works with Playstation 4 Portable External Hard Drive\",\n        \"image\": \"https://fakestoreapi.com/img/61mtL65D4cL._AC_SX679_t.png\",\n        \"price\": 114,\n        \"rating\": 4.8\n    },\n    {\n        \"id\": 13,\n        \"title\": \"Acer SB220Q bi 21.5 inches Full HD (1920 x 1080) IPS Ultra-Thin\",\n        \"image\": \"https://fakestoreapi.com/img/81QpkIctqPL._AC_SX679_t.png\",\n        \"price\": 599,\n        \"rating\": 2.9\n    },\n    {\n        \"id\": 14,\n        \"title\": \"Samsung 49-Inch CHG90 144Hz Curved Gaming Monitor (LC49HG90DMNXZA) – Super Ultrawide Screen QLED \",\n        \"image\": \"https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_t.png\",\n        \"price\": 999.99,\n        \"rating\": 2.2\n    },\n    {\n        \"id\": 15,\n        \"title\": \"BIYLACLESEN Women's 3-in-1 Snowboard Jacket Winter Coats\",\n        \"image\": \"https://fakestoreapi.com/img/51Y5NI-I5jL._AC_UX679_t.png\",\n        \"price\": 56.99,\n        \"rating\": 2.6\n    },\n    {\n        \"id\": 16,\n        \"title\": \"Lock and Love Women's Removable Hooded Faux Leather Moto Biker Jacket\",\n        \"image\": \"https://fakestoreapi.com/img/81XH0e8fefL._AC_UY879_t.png\",\n        \"price\": 29.95,\n        \"rating\": 2.9\n    },\n    {\n        \"id\": 17,\n        \"title\": \"Rain Jacket Women Windbreaker Striped Climbing Raincoats\",\n        \"image\": \"https://fakestoreapi.com/img/71HblAHs5xL._AC_UY879_-2t.png\",\n        \"price\": 39.99,\n        \"rating\": 3.8\n    },\n    {\n        \"id\": 18,\n        \"title\": \"MBJ Women's Solid Short Sleeve Boat Neck V \",\n        \"image\": \"https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_t.png\",\n        \"price\": 9.85,\n        \"rating\": 4.7\n    },\n    {\n        \"id\": 19,\n        \"title\": \"Opna Women's Short Sleeve Moisture\",\n        \"image\": \"https://fakestoreapi.com/img/51eg55uWmdL._AC_UX679_t.png\",\n        \"price\": 7.95,\n        \"rating\": 4.5\n    },\n    {\n        \"id\": 20,\n        \"title\": \"DANVOUY Womens T Shirt Casual Cotton Short\",\n        \"image\": \"https://fakestoreapi.com/img/61pHAEJ4NML._AC_UX679_t.png\",\n        \"price\": 12.99,\n        \"rating\": 3.6\n    }\n]"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Cliente ME",
+					"item": [
+						{
+							"name": "Favoritos",
+							"item": [
+								{
+									"name": "Listar favoritos",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/me/favorites",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												"me",
+												"favorites"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Sucesso",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/v1/customers/me/favorites",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														"me",
+														"favorites"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 14:35:07 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												},
+												{
+													"key": "content-length",
+													"value": "603"
+												},
+												{
+													"key": "content-type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\": 1,\n        \"title\": \"Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops\",\n        \"image\": \"https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png\",\n        \"price\": 109.95,\n        \"rating\": 3.9\n    },\n    {\n        \"id\": 2,\n        \"title\": \"Mens Casual Premium Slim Fit T-Shirts \",\n        \"image\": \"https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_t.png\",\n        \"price\": 22.3,\n        \"rating\": 4.1\n    },\n    {\n        \"id\": 3,\n        \"title\": \"Mens Cotton Jacket\",\n        \"image\": \"https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_t.png\",\n        \"price\": 55.99,\n        \"rating\": 4.7\n    },\n    {\n        \"id\": 4,\n        \"title\": \"Mens Casual Slim Fit\",\n        \"image\": \"https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png\",\n        \"price\": 15.99,\n        \"rating\": 2.1\n    }\n]"
+										}
+									]
+								},
+								{
+									"name": "Adicionar favorito",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"product_id\": 1\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/v1/customers/me/favorites",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												"me",
+												"favorites"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Sucesso",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"product_id\": 4\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url}}/v1/customers/me/favorites",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														"me",
+														"favorites"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 14:35:02 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												},
+												{
+													"key": "content-length",
+													"value": "133"
+												},
+												{
+													"key": "content-type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"id\": 4,\n    \"title\": \"Mens Casual Slim Fit\",\n    \"image\": \"https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png\",\n    \"price\": 15.99,\n    \"rating\": 2.1\n}"
+										},
+										{
+											"name": "Produto inexistente",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"product_id\": 9999\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{base_url}}/v1/customers/me/favorites",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														"me",
+														"favorites"
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 14:42:45 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												},
+												{
+													"key": "content-length",
+													"value": "75"
+												},
+												{
+													"key": "content-type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"detail\": {\n        \"type\": \"product_not_found\",\n        \"message\": \"Produto não encontrado\"\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "Remover favorito",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/me/favorites/:product_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												"me",
+												"favorites",
+												":product_id"
+											],
+											"variable": [
+												{
+													"key": "product_id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Sucesso",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/v1/customers/me/favorites/:product_id",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"v1",
+														"customers",
+														"me",
+														"favorites",
+														":product_id"
+													],
+													"variable": [
+														{
+															"key": "product_id",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": "plain",
+											"header": [
+												{
+													"key": "date",
+													"value": "Fri, 05 Sep 2025 14:36:15 GMT"
+												},
+												{
+													"key": "server",
+													"value": "uvicorn"
+												}
+											],
+											"cookie": [],
+											"body": null
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Obter dados do cliente logado",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/customers/me",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"customers",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Sucesso",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/me",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:21:33 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "66"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"name\": \"Alex Enrique Crispim\",\n    \"email\": \"alex2@example.com\",\n    \"id\": 8\n}"
+								},
+								{
+									"name": "Token inválido ou expirado",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base_url}}/v1/customers/me",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"v1",
+												"customers",
+												"me"
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 05 Sep 2025 14:44:59 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "www-authenticate",
+											"value": "Bearer"
+										},
+										{
+											"key": "content-length",
+											"value": "75"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": {\n        \"type\": \"invalid_token\",\n        \"message\": \"Token inválido ou expirado\"\n    }\n}"
+								}
+							]
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{access_token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

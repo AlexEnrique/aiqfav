@@ -7,6 +7,8 @@ API to manage customers and their favorite products.
 > - add a production Redis
 > - add a production build stage to Docker file
 > - build and push the Docker image to a registry
+> - Add CORS middleware to the API
+> - Improve observability (e.g. metrics, traces with OTEL, etc.)
 
 
 ## Dependencies
@@ -56,3 +58,13 @@ To run the tests with coverage, run `make cov` The report will be available at `
 
 ## Current coverage
 Current coverage is `86%`.
+
+
+## Postman collection
+A Postman collection is available at `postman/aiqfav.postman_collection.json`.
+You can import it into Postman to test the API.
+
+You can also use [this invite link](https://app.getpostman.com/join-team?invite_code=5b3414e4715f76314c0b0e75967afe3705fb41be21b2da2481a9b90144537265&target_code=63f0fc0df654bb5d0ae9ca8fee5c236e) to access the collection.
+
+In order to test, import the environment variables from `postman/aiqfav.postman_environment.json`,
+and set the `base_url` to `http://localhost:8000`. Other envs will be set automatically on requests.
