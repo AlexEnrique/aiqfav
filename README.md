@@ -9,6 +9,7 @@ API to manage customers and their favorite products.
 > - build and push the Docker image to a registry
 > - Add CORS middleware to the API
 > - Improve observability (e.g. metrics, traces with OTEL, etc.)
+> - Add throttling (rate limit requests)
 
 
 ## Dependencies
