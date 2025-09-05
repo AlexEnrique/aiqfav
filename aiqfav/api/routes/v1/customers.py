@@ -28,7 +28,7 @@ router = APIRouter(tags=['customers'])
 @router.get(
     '/customers',
     response_model=list[CustomerPublic],
-    summary='Listar clientes',
+    summary='Listar clientes (apenas para administradores)',
     description='Endpoint para listar todos os clientes',
 )
 async def list_customers(
@@ -56,7 +56,7 @@ async def get_me(
 @router.get(
     '/customers/{customer_id}',
     response_model=CustomerPublic,
-    summary='Buscar cliente por ID',
+    summary='Buscar cliente por ID (apenas para administradores)',
     description='Endpoint para buscar um cliente por ID',
 )
 async def get_customer(
@@ -112,7 +112,7 @@ async def create_customer(
 @router.delete(
     '/customers/{customer_id}',
     response_class=Response,
-    summary='Deletar cliente',
+    summary='Deletar cliente (apenas para administradores)',
     description='Endpoint para deletar um cliente',
 )
 async def delete_customer(
@@ -249,13 +249,14 @@ async def remove_favorite_me(
 @router.get(
     '/customers/{customer_id}/favorites',
     response_model=list[ProductPublic],
-    summary='Listar produtos favoritos',
+    summary='Listar produtos favoritos (apenas para administradores)',
     description='Endpoint para listar todos os produtos favoritos de um cliente',
 )
 async def list_favorites(
     customer_service: Annotated[
         CustomerService, Depends(get_customer_service)
     ],
+    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
     customer_id: int,
 ):
     try:
@@ -272,7 +273,7 @@ async def list_favorites(
 
 @router.put(
     '/customers/{customer_id}/favorites',
-    summary='Adicionar produto favorito',
+    summary='Adicionar produto favorito (apenas para administradores)',
     response_model=ProductPublic,
     responses={
         200: {
@@ -293,6 +294,7 @@ async def add_favorite(
     customer_service: Annotated[
         CustomerService, Depends(get_customer_service)
     ],
+    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
     customer_id: int,
     payload: FavoriteUpsert,
 ):
@@ -320,7 +322,7 @@ async def add_favorite(
 
 @router.delete(
     '/customers/{customer_id}/favorites/{product_id}',
-    summary='Remover produto dos favoritos',
+    summary='Remover produto dos favoritos (apenas para administradores)',
     response_class=Response,
     status_code=204,
     responses={
@@ -340,6 +342,7 @@ async def remove_favorite(
     customer_service: Annotated[
         CustomerService, Depends(get_customer_service)
     ],
+    admin: Annotated[CustomerPublic, Depends(get_current_admin)],
     customer_id: int,
     product_id: int,
 ):
