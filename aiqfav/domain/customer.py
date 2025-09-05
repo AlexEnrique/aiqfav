@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
 
 from aiqfav.utils.pydantic.types import Password
 
@@ -64,3 +64,7 @@ class CustomerBaseException(Exception):
 
 class CustomerNotFound(CustomerBaseException):
     """Exception when a customer is not found."""
+
+
+### Type Adapters
+CustomerListAdapter = TypeAdapter(list[CustomerPublic])

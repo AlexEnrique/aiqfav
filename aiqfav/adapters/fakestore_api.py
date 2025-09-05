@@ -5,7 +5,6 @@ from typing import Iterable
 
 import httpx
 import redis.asyncio as redis
-from environs import Env
 
 from aiqfav.domain.product import ProductPublic
 from aiqfav.utils.httpx import raise_for_status
@@ -15,24 +14,20 @@ from .exceptions import StoreApiNotFoundError, StoreApiUnexpectedResponseError
 
 __all__ = ['FakeStoreApi']
 
-env = Env()
-env.read_env()
-
-
-CACHE_EXPIRATION = 60 * 60  # 1 hour
-
 
 class FakeStoreApi(StoreApiAdapter):
-    def __init__(self, base_url: str):
+    def __init__(
+        self,
+        base_url: str,
+        redis: redis.Redis,
+        cache_expiration: int = 60 * 60,
+    ):
         assert isinstance(base_url, str) and base_url, (
             'base_url must be a non-empty string'
         )
         self.base_url = base_url.rstrip('/')
-        self.redis = redis.Redis(
-            host=env('REDIS_HOST'),
-            port=env.int('REDIS_PORT'),
-            db=env.int('REDIS_DB'),
-        )
+        self.redis = redis
+        self.cache_expiration = cache_expiration
 
     async def list_products(self) -> list[ProductPublic]:
         """List products from the store API"""
@@ -58,7 +53,7 @@ class FakeStoreApi(StoreApiAdapter):
 
             assert isinstance(data, list)
             await self.redis.set(
-                'products', json.dumps(data), ex=CACHE_EXPIRATION
+                'products', json.dumps(data), ex=self.cache_expiration
             )
 
             pipeline = self.redis.pipeline()
@@ -66,7 +61,7 @@ class FakeStoreApi(StoreApiAdapter):
                 pipeline.set(
                     f'product:{product["id"]}',
                     json.dumps(product),
-                    ex=CACHE_EXPIRATION,
+                    ex=self.cache_expiration,
                 )
             await pipeline.execute()
 
@@ -100,7 +95,9 @@ class FakeStoreApi(StoreApiAdapter):
 
             assert isinstance(data, dict)
             await self.redis.set(
-                f'product:{product_id}', json.dumps(data), ex=CACHE_EXPIRATION
+                f'product:{product_id}',
+                json.dumps(data),
+                ex=self.cache_expiration,
             )
 
             return self._validate_product(data)

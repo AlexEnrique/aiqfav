@@ -1,5 +1,6 @@
 from typing import Annotated
 
+import redis.asyncio as redis
 from environs import Env
 from fastapi import Depends
 from passlib.context import CryptContext
@@ -33,6 +34,15 @@ def get_pwd_context() -> CryptContext:
     return CryptContext(schemes=['argon2'], deprecated='auto')
 
 
+def get_redis() -> redis.Redis:
+    """Dependency para obter o Redis"""
+    return redis.Redis(
+        host=env('REDIS_HOST'),
+        port=env.int('REDIS_PORT'),
+        db=env.int('REDIS_DB'),
+    )
+
+
 def get_customer_repository(
     async_session: Annotated[
         async_sessionmaker[AsyncSession], Depends(get_async_session)
@@ -42,9 +52,11 @@ def get_customer_repository(
     return CustomerRepositoryImpl(async_session)
 
 
-def get_store_api_adapter() -> StoreApiAdapter:
+def get_store_api_adapter(
+    redis: Annotated[redis.Redis, Depends(get_redis)],
+) -> StoreApiAdapter:
     """Dependency para obter o adaptador de API de loja"""
-    return FakeStoreApi(env('FAKE_STORE_API_URL'))
+    return FakeStoreApi(env('FAKE_STORE_API_URL'), redis)
 
 
 def get_customer_service(
@@ -55,6 +67,9 @@ def get_customer_service(
         StoreApiAdapter, Depends(get_store_api_adapter)
     ],
     pwd_context: Annotated[CryptContext, Depends(get_pwd_context)],
+    redis: Annotated[redis.Redis, Depends(get_redis)],
 ) -> CustomerService:
     """Dependency para obter o serviço de clientes"""
-    return CustomerService(customer_repository, store_api_adapter, pwd_context)
+    return CustomerService(
+        customer_repository, store_api_adapter, pwd_context, redis
+    )

@@ -1,3 +1,4 @@
+import redis.asyncio as redis
 from passlib.context import CryptContext
 
 from aiqfav.adapters.base import StoreApiAdapter
@@ -19,10 +20,12 @@ class CustomerService:
         customer_repo: CustomerRepository,
         store_api_adapter: StoreApiAdapter,
         pwd_context: CryptContext,
+        redis: redis.Redis,
     ):
         self.customer_repo = customer_repo
         self.store_api_adapter = store_api_adapter
         self.pwd_context = pwd_context
+        self.redis = redis
 
     async def get_customer_by_id(self, id: int) -> CustomerPublic:
         customer_in_db = await self.customer_repo.get_customer(id=id)
