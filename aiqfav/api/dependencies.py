@@ -4,7 +4,8 @@ from typing import Annotated
 
 import redis.asyncio as redis
 from environs import Env
-from fastapi import Depends
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -17,11 +18,20 @@ from aiqfav.adapters.fakestore_api import FakeStoreApi
 from aiqfav.adapters.jwt import JwtAdapterImpl
 from aiqfav.db.base import CustomerRepository
 from aiqfav.db.implementations.customer import CustomerRepositoryImpl
+from aiqfav.domain.customer import (
+    CustomerNotFound,
+    CustomerPublic,
+)
 from aiqfav.services.auth import AuthService
+from aiqfav.services.auth.exceptions import InvalidToken
 from aiqfav.services.customer import CustomerService
+from aiqfav.utils.api_errors import ErrorCodes, get_error_response
 
 env = Env()
 env.read_env()
+
+
+http_bearer = HTTPBearer()
 
 
 def get_async_session() -> async_sessionmaker[AsyncSession]:
@@ -117,3 +127,26 @@ def get_auth_service(
         jwt_issuer=env('JWT_ISSUER'),
         jti_generator=lambda: uuid.uuid4().hex,
     )
+
+
+async def get_current_customer(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(http_bearer)],
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    customer_service: Annotated[
+        CustomerService, Depends(get_customer_service)
+    ],
+) -> CustomerPublic:
+    """Dependency para obter o cliente autenticado"""
+    access_token = credentials.credentials
+    try:
+        customer_id = auth_service.get_customer_id_from_token(access_token)
+        return await customer_service.get_customer_by_id(customer_id)
+    except (InvalidToken, CustomerNotFound):
+        raise HTTPException(
+            status_code=401,
+            detail=get_error_response(
+                error_code=ErrorCodes.INVALID_TOKEN,
+                message='Token inválido ou expirado',
+            ),
+            headers={'WWW-Authenticate': 'Bearer'},
+        )

@@ -14,6 +14,7 @@ class ErrorCodes(StrEnum):
     FAVORITE_NOT_FOUND = 'favorite_not_found'
     PRODUCT_NOT_FOUND = 'product_not_found'
     INVALID_CREDENTIALS = 'invalid_credentials'
+    INVALID_TOKEN = 'invalid_token'
 
 
 def get_error_response(

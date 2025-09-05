@@ -15,3 +15,15 @@ class StoreApiUnexpectedResponseError(StoreApiAdapterException):
 
 class StoreApiNotFoundError(StoreApiAdapterException):
     """Exception for not found errors from store API adapters"""
+
+
+class JwtAdapterException(Exception):
+    """Base exception for JWT adapters"""
+
+
+class ExpiredToken(JwtAdapterException):
+    """Exception for expired tokens"""
+
+
+class InvalidAudience(JwtAdapterException):
+    """Exception for invalid audiences"""

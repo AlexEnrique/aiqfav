@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse, Response
 
 from aiqfav.adapters.exceptions import StoreApiNotFoundError
-from aiqfav.api.dependencies import get_customer_service
+from aiqfav.api.dependencies import get_current_customer, get_customer_service
 from aiqfav.domain.customer import (
     CustomerCreate,
     CustomerNotFound,
@@ -33,6 +33,19 @@ async def list_customers(
     ],
 ):
     return await customer_service.list_customers()
+
+
+@router.get(
+    '/customers/me',
+    response_model=CustomerPublic,
+    summary='Buscar cliente por ID',
+    description='Endpoint para buscar um cliente por ID',
+)
+async def get_me(
+    customer: Annotated[CustomerPublic, Depends(get_current_customer)],
+):
+    """Endpoint para buscar o cliente autenticado"""
+    return customer
 
 
 @router.get(

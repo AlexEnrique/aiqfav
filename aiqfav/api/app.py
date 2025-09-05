@@ -9,7 +9,7 @@ __all__ = ['create_app']
 
 def create_app() -> FastAPI:
     app = FastAPI()
+    app.include_router(auth_router_v1, prefix='/v1')
     app.include_router(customers_router_v1, prefix='/v1')
     app.include_router(products_router_v1, prefix='/v1')
-    app.include_router(auth_router_v1, prefix='/v1')
     return app

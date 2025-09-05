@@ -5,9 +5,12 @@ from typing import Callable
 from passlib.context import CryptContext
 
 from aiqfav.adapters.base import JwtAdapter
+from aiqfav.adapters.exceptions import ExpiredToken, InvalidAudience
 from aiqfav.db.base import CustomerRepository
 from aiqfav.domain.customer import CustomerNotFound
 from aiqfav.services.customer.exceptions import InvalidCredentials
+
+from .exceptions import InvalidToken
 
 
 class AuthService:
@@ -60,6 +63,33 @@ class AuthService:
 
         return access_token, refresh_token
 
+    def get_customer_id_from_token(self, token: str) -> int:
+        """Get the customer ID from a token
+
+        Args:
+            token (str): The token to get the customer ID from.
+
+        Returns:
+            int: The customer ID.
+
+        Raises:
+            InvalidToken: If the token is expired, invalid or does not contain a customer ID.
+        """
+        logging.info('Getting customer ID from token')
+
+        try:
+            token_data = self.jwt_adapter.decode(token, audience=['access'])
+        except (ExpiredToken, InvalidAudience) as e:
+            raise InvalidToken('Token inválido ou expirado') from e
+
+        if 'sub' not in token_data:
+            raise InvalidToken('Token não contém um ID de cliente')
+
+        customer_id = int(token_data['sub'])
+        logging.debug('Customer ID: %s', customer_id)
+
+        return customer_id
+
     def _generate_tokens(self, customer_id: int) -> tuple[str, str]:
         access_token = self._generate_token(customer_id, 'access')
         refresh_token = self._generate_token(customer_id, 'refresh')
@@ -85,7 +115,7 @@ class AuthService:
             'jti': self.jti_generator(),
             'iss': self.jwt_issuer,
             'iat': iat,
-            'sub': customer_id,
+            'sub': str(customer_id),
             **specific_data[token_type],
         }
 

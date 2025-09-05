@@ -1,4 +1,5 @@
 import abc
+from typing import Iterable
 
 from aiqfav.domain.product import ProductPublic
 
@@ -58,8 +59,28 @@ class JwtAdapter(abc.ABC):
 
     @abc.abstractmethod
     def encode(self, payload: dict) -> str:
-        """Encode a payload into a JWT"""
+        """Encode a payload into a JWT
+
+        Args:
+            payload (dict): The payload to encode.
+
+        Returns:
+            str: The encoded token.
+        """
 
     @abc.abstractmethod
-    def decode(self, token: str) -> dict:
-        """Decode a JWT into a payload"""
+    def decode(
+        self, token: str, audience: Iterable[str] | None = None
+    ) -> dict:
+        """Decode a JWT into a payload
+
+        Args:
+            token (str): The token to decode.
+
+        Returns:
+            dict: The payload.
+
+        Raises:
+            ExpiredToken: If the token is expired.
+            InvalidAudience: If the token has an invalid audience.
+        """
