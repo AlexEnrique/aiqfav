@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse, Response
 
+from aiqfav.adapters.exceptions import StoreApiNotFoundError
 from aiqfav.api.dependencies import get_customer_service
 from aiqfav.domain.customer import (
     CustomerCreate,
@@ -175,6 +176,14 @@ async def add_favorite(
             detail=get_error_response(
                 error_code=ErrorCodes.CUSTOMER_NOT_FOUND,
                 message='Cliente não encontrado',
+            ),
+        )
+    except StoreApiNotFoundError:
+        raise HTTPException(
+            status_code=404,
+            detail=get_error_response(
+                error_code=ErrorCodes.PRODUCT_NOT_FOUND,
+                message='Produto não encontrado',
             ),
         )
 

@@ -12,6 +12,7 @@ class ErrorCodes(StrEnum):
     EMAIL_ALREADY_EXISTS = 'email_already_exists'
     CUSTOMER_NOT_FOUND = 'customer_not_found'
     FAVORITE_NOT_FOUND = 'favorite_not_found'
+    PRODUCT_NOT_FOUND = 'product_not_found'
 
 
 def get_error_response(

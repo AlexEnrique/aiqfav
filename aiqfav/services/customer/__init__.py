@@ -177,10 +177,12 @@ class CustomerService:
         # Raises CustomerNotFound, se o cliente não existe
         await self.customer_repo.get_customer(id=customer_id)
 
+        product = await self.store_api_adapter.get_product(product_id)
+
         await self.customer_repo.add_favorite(customer_id, product_id)
         await self._delete_cached_favorites(customer_id)
 
-        return await self.store_api_adapter.get_product(product_id)
+        return product
 
     async def remove_favorite(self, customer_id: int, product_id: int) -> None:
         """Remove a product from customer's favorites.

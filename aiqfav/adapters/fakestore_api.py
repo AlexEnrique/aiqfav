@@ -83,7 +83,9 @@ class FakeStoreApi(StoreApiAdapter):
             else:
                 logging.debug('Cache miss for product %s', product_id)
 
-            if response.status_code == 404:
+            # Since the fake store API returns status code 200
+            # with an empty body, we can't check for status 404
+            if response.content == b'':
                 raise StoreApiNotFoundError(
                     response.content, response.status_code
                 )
